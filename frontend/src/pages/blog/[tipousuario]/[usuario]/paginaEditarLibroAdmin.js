@@ -10,12 +10,10 @@ const AgregarNuevo = () => {
     const { usuario } = router.query;
     const { id_libro } = router.query;
     const [primernombre, setPrimernombre] = useState('');
-    const [titulo, setTitulo] = useState('');
-    const [autor, setAutor] = useState('');
-    const [isbn13, setIsbn] = useState('');
-    const [isbn13aux, setIsbnaux] = useState('');   
-    const [tema, setTema] = useState('');
-    const [flag, setFlag] = useState(false)
+
+    const [state, setState] = useState(
+        { titulo: '', autor: '', isbn13: '', tema: '', isbn13aux: '' }
+    )
     useEffect(() => {
         const recopilarNombreUsuario = async () => {
             try {
@@ -37,10 +35,6 @@ const AgregarNuevo = () => {
                 console.error('Error de conexión');
             }
         };
-        recopilarNombreUsuario();
-    }, [usuario]);
-
-    useEffect(() => {
         const recopilarInfoLibro = async () => {
             try {
                 const response = await fetch('/api/editarlibro/recoger', {
@@ -56,23 +50,27 @@ const AgregarNuevo = () => {
                 const { autor } = data;
                 const { isbn13 } = data;
                 const { tema } = data;
-                setTitulo(titulo);
-                setAutor(autor);
-                setIsbn(isbn13);
-                setIsbnaux(isbn13);
-                setTema(tema);
+                setState({ titulo: titulo, autor: autor, isbn13: isbn13, tema: tema, isbn13aux: isbn13 });
             } catch (error) {
                 console.error('Error de conexión');
             }
         };
         recopilarInfoLibro();
-    }, [usuario]);
-
+        recopilarNombreUsuario();
+    }, [usuario, id_libro]);
     //------------------------------------------------------------------------------
-    const [state, setState] = useState(
-        { titulo: '', autor: '', isbn13: '', tema: '' , isbn13aux: ''}
-    )
+
+    /*
     async function handleGuardarClick() {
+        //HACE QUE LA PAGINA NO SE VUEVLA A ACTUALIZAR
+        event.preventDefault();
+        await actualizarLibro(state);
+    };
+¨*/
+    const [flag, setFlag] = useState(false);
+    const handleGuardarClick = async (event) => {
+        //HACE QUE LA PAGINA NO SE VUEVLA A ACTUALIZAR
+        event.preventDefault();
         await actualizarLibro(state);
     };
     async function actualizarLibro(nuevosDatos) {
@@ -86,7 +84,6 @@ const AgregarNuevo = () => {
             });
             const data = await response.json();
             if (data.success) {
-                alert(data.message);
                 setFlag(true);
             } else {
                 alert(data.message);
@@ -96,18 +93,17 @@ const AgregarNuevo = () => {
         }
     }
     //-----------------------------------------------------------------------------------------
-    function completo() {
-        setFlag(false);
+    const completo = () => {
+        setFlag(true);
         router.push(`/blog/admin/${usuario}/paginaResultadosAdmin`);
-    };
-
+    }
     //LOGICA PARA IR AL INICIO
     const [MostrarValidacion, setMostrarValidacion] = useState(false);
     function ValidacionDeSalida() {
         setMostrarValidacion(true);
     }
     function confirmacionSalida() {
-        window.location.href = "/login";
+        router.push("/login");
     }
     function nosalir() {
         setMostrarValidacion(false);
@@ -122,7 +118,20 @@ const AgregarNuevo = () => {
                             <li><Link href={`/blog/admin/${usuario}/paginaPrincipalAdmin`}>Inicio</Link></li>
                             <li><Link href={`/blog/admin/${usuario}/paginaPerfilAdmin`}>Perfil</Link></li>
                             <li><Link href={`/blog/admin/${usuario}/paginaResultadosAdmin`}>Bibliotecas</Link></li>
-                            <li><a href onClick={ValidacionDeSalida} style={{ cursor: 'pointer' }}>Salir</a></li>
+                            <button
+                                onClick={ValidacionDeSalida}
+                                style={{
+                                    cursor: 'pointer',
+                                    border: 'none',
+                                    background: 'none',
+                                    color: 'rgb(93, 1, 93)',
+                                    textDecoration: 'none',
+                                    fontSize: '20px',
+                                    fontWeight: 'bold',
+                                    marginTop: '13px',
+                                    marginLeft: '-70px',
+                                }}
+                            >Salir</button>
                             {MostrarValidacion && (
                                 <>
                                     <div className="confirmacion-fondo">
@@ -169,10 +178,9 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="titulo"
                                         name="titulo"
-                                        value={titulo}
+                                        value={state.titulo}
                                         onChange={(e) => {
-                                            setState({ titulo: e.target.value, autor: autor, isbn13: isbn13, tema: tema, isbn13aux: isbn13aux});
-                                            setTitulo(e.target.value);
+                                            setState({ titulo: e.target.value, autor: state.autor, isbn13: state.isbn13, tema: state.tema, isbn13aux: state.isbn13aux });
                                         }}
                                         required
                                     />
@@ -184,10 +192,10 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="autor"
                                         name="autor"
-                                        value={autor}
+                                        value={state.autor}
                                         onChange={(e) => {
-                                            setState({ titulo: titulo, autor: e.target.value, isbn13: isbn13, tema: tema, isbn13aux: isbn13aux});
-                                            setAutor(e.target.value);
+                                            setState({ titulo: state.titulo, autor: e.target.value, isbn13: state.isbn13, tema: state.tema, isbn13aux: state.isbn13aux });
+
                                         }}
                                         required
                                     />
@@ -199,10 +207,10 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="isbn13"
                                         name="isbn13"
-                                        value={isbn13}
+                                        value={state.isbn13}
                                         onChange={(e) => {
-                                            setState({ titulo: titulo, autor: autor, isbn13: e.target.value, tema: tema, isbn13aux: isbn13aux});
-                                            setIsbn(e.target.value);
+                                            setState({ titulo: state.titulo, autor: state.autor, isbn13: e.target.value, tema: state.tema, isbn13aux: state.isbn13aux });
+
                                         }}
                                         required
                                     />
@@ -214,10 +222,10 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="tema"
                                         name="tema"
-                                        value={tema}
+                                        value={state.tema}
                                         onChange={(e) => {
-                                            setState({ titulo: titulo, autor: autor, isbn13: isbn13, tema: e.target.value, isbn13aux: isbn13aux});
-                                            setTema(e.target.value);
+                                            setState({ titulo: state.titulo, autor: state.autor, isbn13: state.isbn13, tema: e.target.value, isbn13aux: state.isbn13aux });
+
                                         }}
                                         required
                                     />
@@ -231,7 +239,7 @@ const AgregarNuevo = () => {
                             <div className="confirmacion-fondo">
                                 <div className="confirmacion">
                                     <h2>Registro completo</h2>
-                                    <h3>El recurso ha sido editado con éxito</h3>
+                                    <h3>El recurso ha sido EDITADO con éxito</h3>
                                     <button onClick={completo}>OK</button>
                                 </div>
                             </div>

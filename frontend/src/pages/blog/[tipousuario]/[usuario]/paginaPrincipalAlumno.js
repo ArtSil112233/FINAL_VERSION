@@ -91,7 +91,21 @@ const Principal = () => {
                 <li><Link href={`/blog/alumno/${usuario}/paginaPrincipalAlumno`}>Principal</Link></li>
                 <li><Link href={`/blog/alumno/${usuario}/paginaPerfilAlumno`}>Perfil</Link></li>
                 <li><Link href={`/blog/alumno/${usuario}/paginaResultadosAlumno`}>Préstamos</Link></li>
-                <li><a href onClick={ValidacionDeSalida} style={{ cursor: 'pointer' }}>Salir</a></li>
+                <button
+                  onClick={ValidacionDeSalida}
+                  style={{
+                    cursor: 'pointer',
+                    border: 'none',
+                    background: 'none',
+                    color: 'rgb(93, 1, 93)',
+                    textDecoration: 'none',
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    marginTop: '13px',
+                    display: 'inline-block',  
+                    marginLeft: '-70px',
+                  }}
+                >Salir</button>
                 {MostrarValidacion && (
                   <>
                     <div className="confirmacion-fondo">
@@ -122,7 +136,7 @@ const Principal = () => {
                     <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}</p>
                   </div>
                   <div className="imagen">
-                    <img src={reserva.reservalibro.portada} loading= "lazzy" alt="/media.png" className="icono_default" />
+                    <img src={reserva.reservalibro.portada} loading="lazzy" alt="/media.png" className="icono_default" />
                   </div>
                 </div>
               ))}

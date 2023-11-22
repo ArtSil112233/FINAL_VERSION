@@ -106,13 +106,13 @@ const AgregarNuevo = () => {
 
     //LOGICA PARA IR AL INICIO
     const [MostrarValidacion, setMostrarValidacion] = useState(false);
-    function ValidacionDeSalida(){
+    function ValidacionDeSalida() {
         setMostrarValidacion(true);
     }
-    function confirmacionSalida(){
+    function confirmacionSalida() {
         window.location.href = "/login";
     }
-    function nosalir(){
+    function nosalir() {
         setMostrarValidacion(false);
     }
 
@@ -125,7 +125,20 @@ const AgregarNuevo = () => {
                             <li><Link href={`/blog/admin/${usuario}/paginaPrincipalAdmin`}>Inicio</Link></li>
                             <li><Link href={`/blog/admin/${usuario}/paginaPerfilAdmin`}>Perfil</Link></li>
                             <li><Link href={`/blog/admin/${usuario}/paginaResultadosAdmin`}>Bibliotecas</Link></li>
-                            <li><a href onClick={ValidacionDeSalida} style={{ cursor: 'pointer' }}>Salir</a></li>
+                            <button
+                                onClick={ValidacionDeSalida}
+                                style={{
+                                    cursor: 'pointer',
+                                    border: 'none',
+                                    background: 'none',
+                                    color: 'rgb(93, 1, 93)',
+                                    textDecoration: 'none', 
+                                    fontSize: '20px',
+                                    fontWeight: 'bold',
+                                    marginTop: '13px',
+                                    marginLeft: '-70px',
+                                }}
+                            >Salir</button>
                             {MostrarValidacion && (
                                 <>
                                     <div className="confirmacion-fondo">
@@ -165,7 +178,7 @@ const AgregarNuevo = () => {
                         </div>
                         <form className="opciones-contenido" onSubmit={mngmtSubmit}>
                             <div className="column-2">
-                                <div className="input-container-2" onSubmit={mngmtSubmit}>
+                                <div className="input-container-2">
                                     <label className="form-label-2" htmlFor="titulo">TÍTULO</label>
                                     <input
                                         className="form-input-2"
@@ -177,7 +190,7 @@ const AgregarNuevo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="input-container-2" onSubmit={mngmtSubmit}>
+                                <div className="input-container-2">
                                     <label className="form-label-2" htmlFor="autor">Autor, autores</label>
                                     <input
                                         className="form-input-2"
@@ -189,7 +202,7 @@ const AgregarNuevo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="input-container-2" onSubmit={mngmtSubmit}>
+                                <div className="input-container-2">
                                     <label className="form-label-2" htmlFor="isbn13">ISBN</label>
                                     <input
                                         className="form-input-2"
@@ -201,7 +214,7 @@ const AgregarNuevo = () => {
                                         required
                                     />
                                 </div>
-                                <div className="input-container-2" onSubmit={mngmtSubmit}>
+                                <div className="input-container-2">
                                     <label className="form-label-2" htmlFor="tema">Serie, tipo</label>
                                     <input
                                         className="form-input-2"

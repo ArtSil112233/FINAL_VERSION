@@ -189,7 +189,20 @@ const Principal = () => {
                 <li><Link href={`/blog/admin/${usuario}/paginaPrincipalAdmin`}>Inicio</Link></li>
                 <li><Link href={`/blog/admin/${usuario}/paginaPerfilAdmin`}>Perfil</Link></li>
                 <li><Link href={`/blog/admin/${usuario}/paginaResultadosAdmin`}>Bibliotecas</Link></li>
-                <li><a href onClick={ValidacionDeSalida} style={{ cursor: 'pointer' }}>Salir</a></li>
+                <button
+                  onClick={ValidacionDeSalida}
+                  style={{
+                    cursor: 'pointer',
+                    border: 'none',
+                    background: 'none',
+                    color: 'rgb(93, 1, 93)',
+                    textDecoration: 'none',
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    marginTop: '13px',
+                    marginLeft: '-70px',
+                  }}
+                >Salir</button>
                 {MostrarValidacion && (
                   <>
                     <div className="confirmacion-fondo">

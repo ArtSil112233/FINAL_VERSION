@@ -28,7 +28,7 @@ ruta.post('/filtrarReservas', async (req, res) => {
     if (reservas.length > 0) {
       res.json({ success: true, reservas: reservas });
     } else {
-      res.status(401).json({ success: false });
+      res.status(401).json({ success: false});
     }
   } catch (error) {
     console.error('Error al buscar todas las reservas!!!!!!', error);
@@ -42,7 +42,7 @@ ruta.post('/reservas_libros_usuario', async (req, res) => {
       include: ['reservalibro', 'usuariolibro']
     });
     if (reservas.length > 0) {
-      res.json({ success: true, reservas: reservas });
+      res.status(201).json({ success: true, reservas: reservas });
     } else {
       res.status(401).json({ success: false });
     }

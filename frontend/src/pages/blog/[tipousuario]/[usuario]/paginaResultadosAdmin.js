@@ -72,7 +72,13 @@ const Principal = () => {
             });
             const data = await response.json();
             const { reservas } = data;
-            setReservas(reservas)
+            if (response.ok) {
+                const { reservas } = data;
+                setReservas(reservas);
+                console.log("Reservas general: ", reservas);
+            } else {
+                setReservas([]);
+            }
         } catch (error) {
             console.error('Error de conexión');
         }
@@ -81,23 +87,8 @@ const Principal = () => {
     useEffect(() => {
         obtenerReservas();
     }, []);
-
-    const eliminarReserva = async (libro) => {
-        try {
-            const response = await fetch('/api/filtrar/eliminarReserva', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ libro }),
-            });
-        } catch (error) {
-            console.error('Error de conexión');
-        }
-
-    };
     // Función para manejar la búsqueda y redireccionar
-    function buscar (id_libro){
+    function buscar(id_libro) {
         // Construir la URL con los parámetros
         const queryParams = {
             id_libro
@@ -132,7 +123,20 @@ const Principal = () => {
                                 <li><Link href={`/blog/admin/${usuario}/paginaPrincipalAdmin`}>Inicio</Link></li>
                                 <li><Link href={`/blog/admin/${usuario}/paginaPerfilAdmin`}>Perfil</Link></li>
                                 <li><Link href={`/blog/admin/${usuario}/paginaResultadosAdmin`}>Bibliotecas</Link></li>
-                                <li><a href onClick={ValidacionDeSalida} style={{ cursor: 'pointer' }}>Salir</a></li>
+                                <button
+                                    onClick={ValidacionDeSalida}
+                                    style={{
+                                        cursor: 'pointer',
+                                        border: 'none',
+                                        background: 'none',
+                                        color: 'rgb(93, 1, 93)',
+                                        textDecoration: 'none',
+                                        fontSize: '20px',
+                                        fontWeight: 'bold',
+                                        marginTop: '13px',
+                                        marginLeft: '-70px',
+                                    }}
+                                >Salir</button>
                                 {MostrarValidacion && (
                                     <>
                                         <div className="confirmacion-fondo">

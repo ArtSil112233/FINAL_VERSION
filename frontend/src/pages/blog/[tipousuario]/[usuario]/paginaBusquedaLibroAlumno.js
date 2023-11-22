@@ -103,36 +103,37 @@ const Principal = () => {
             // Crea un objeto de reserva con la fecha, usuario y título del libro
             const fechaEntrega = new Date(selectedDate);
             const fechaactual = new Date();
-            if(fechaEntrega <= fechaactual || fechaEntrega > (fechaactual+30)){
+            if (fechaEntrega <= fechaactual || fechaEntrega > (fechaactual + 30)) {
                 alert("POR FAVOR, selecciona una fecha mayor al actual y no más de 30 días");
                 setShowCalendar(true);
-            }else{
-            setFechaEntrega(fechaEntrega.toDateString());
-            try {
-                const response = await fetch('/api/register/reservas', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        fecha: fechaactual.toISOString(),
-                        fechaentrega: selectedDate.toISOString(),
-                        disponibilidad: 1,
-                        id_libro: libroSeleccionado.id,
-                        usuario: usuario
-                    }),
-                });
-                obtenerReservas();
-            } catch (error) {
-                console.log(error);
-                console.error('Error de conexión');
-            }
-            setSelectedDate(new Date());
-            setShowCalendar(false);
+            } else {
+                setFechaEntrega(fechaEntrega.toDateString());
+                try {
+                    const response = await fetch('/api/register/reservas', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            fecha: fechaactual.toISOString(),
+                            fechaentrega: selectedDate.toISOString(),
+                            disponibilidad: 1,
+                            id_libro: libroSeleccionado.id,
+                            usuario: usuario
+                        }),
+                    });
+                    obtenerReservas();
+                } catch (error) {
+                    console.log(error);
+                    console.error('Error de conexión');
+                }
+                setSelectedDate(new Date());
+                setShowCalendar(false);
 
-            setFlag(false);
-            setShowMessage(true);
-        }}
+                setFlag(false);
+                setShowMessage(true);
+            }
+        }
     };
 
     const handleOKButtonClick = () => {
@@ -165,7 +166,20 @@ const Principal = () => {
                                     <li><Link href={`/blog/alumno/${usuario}/paginaPrincipalAlumno`}>Principal</Link></li>
                                     <li><Link href={`/blog/alumno/${usuario}/paginaPerfilAlumno`}>Perfil</Link></li>
                                     <li><Link href={`/blog/alumno/${usuario}/paginaResultadosAlumno`}>Préstamos</Link></li>
-                                    <li><a href onClick={ValidacionDeSalida} style={{ cursor: 'pointer' }}>Salir</a></li>
+                                    <button
+                                        onClick={ValidacionDeSalida}
+                                        style={{
+                                            cursor: 'pointer',
+                                            border: 'none',
+                                            background: 'none',
+                                            color: 'rgb(93, 1, 93)',
+                                            textDecoration: 'none',
+                                            fontSize: '20px',
+                                            fontWeight: 'bold',
+                                            marginTop: '13px',
+                                            marginLeft: '-70px',
+                                        }}
+                                    >Salir</button>
                                     {MostrarValidacion && (
                                         <>
                                             <div className="confirmacion-fondo">
