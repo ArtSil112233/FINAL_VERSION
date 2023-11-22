@@ -1,0 +1,5 @@
+id;nombre;apellido;tipo_documento;nro_documento;correo;password;imagen_url;idioma;prefijo;color;tipo_usuario
+1;Arturo Aaron;Silvera Pocco;DNI;123;arturosilvera171811@gmail.com;123;data:image/pngbase64;;;;usuario
+2;David Perejil;Huaman Torres;DNI;123;davopere@gmail.com;gato123;data:image/pngbase64868;castellano;+51;blanco;administrador
+3;Marco Fernando;Cabrejos Perez;DNI;123;marcfer@gmail.com;perro123;data:image/pngbase64868;castellano;+51;marron;administrador
+4;Javier Hugo;Huerta Soldevilla;DNI;123;jahugo@gmail.com;conejo123;data:image/pngbase64868;castellano;+51;azul;administrador
