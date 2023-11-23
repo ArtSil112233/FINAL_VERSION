@@ -12,7 +12,7 @@ const AgregarNuevo = () => {
     const [primernombre, setPrimernombre] = useState('');
 
     const [state, setState] = useState(
-        { titulo: '', autor: '', isbn13: '', tema: '', isbn13aux: ''}
+        { titulo: '', autor: '', isbn13: '', tema: '', isbn13aux: '' }
     )
     useEffect(() => {
         const recopilarNombreUsuario = async () => {
@@ -42,27 +42,29 @@ const AgregarNuevo = () => {
         recopilarNombreUsuario();
     }, []);
     useEffect(() => {
-        const recopilarInfoLibro = async () => {
-            try {
-                const response = await fetch('/api/editarlibro/recoger', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ id_libro }),
-                });
+        if (id_libro) {
+            const recopilarInfoLibro = async () => {
+                try {
+                    const response = await fetch('/api/editarlibro/recoger', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ id_libro }),
+                    });
 
-                const data = await response.json();
-                const { titulo } = data;
-                const { autor } = data;
-                const { isbn13 } = data;
-                const { tema } = data;
-                setState({ titulo: titulo, autor: autor, isbn13: isbn13, tema: tema, isbn13aux: isbn13});
-            } catch (error) {
-                console.error('Error de conexión');
-            }
-        };
-        recopilarInfoLibro();
+                    const data = await response.json();
+                    const { titulo } = data;
+                    const { autor } = data;
+                    const { isbn13 } = data;
+                    const { tema } = data;
+                    setState({ titulo: titulo, autor: autor, isbn13: isbn13, tema: tema, isbn13aux: isbn13 });
+                } catch (error) {
+                    console.error('Error de conexión');
+                }
+            };
+            recopilarInfoLibro();
+        }
     }, [id_libro]);
     //------------------------------------------------------------------------------
 
@@ -170,7 +172,7 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="titulo"
                                         name="titulo"
-                                        value={state.titulo}
+                                        value={state.titulo || ''}
                                         onChange={(e) => {
                                             setState({ titulo: e.target.value, autor: state.autor, isbn13: state.isbn13, tema: state.tema, isbn13aux: state.isbn13aux });
                                         }}
@@ -184,9 +186,9 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="autor"
                                         name="autor"
-                                        value={state.autor}
+                                        value={state.autor || ''}
                                         onChange={(e) => {
-                                            setState({ titulo: state.titulo, autor: e.target.value, isbn13: state.isbn13, tema: state.tema, isbn13aux: state.isbn13aux});
+                                            setState({ titulo: state.titulo, autor: e.target.value, isbn13: state.isbn13, tema: state.tema, isbn13aux: state.isbn13aux });
 
                                         }}
                                         required
@@ -199,7 +201,7 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="isbn13"
                                         name="isbn13"
-                                        value={state.isbn13}
+                                        value={state.isbn13 || ''}
                                         onChange={(e) => {
                                             setState({ titulo: state.titulo, autor: state.autor, isbn13: e.target.value, tema: state.tema, isbn13aux: state.isbn13aux });
 
@@ -214,7 +216,7 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="tema"
                                         name="tema"
-                                        value={state.tema}
+                                        value={state.tema || ''}
                                         onChange={(e) => {
                                             setState({ titulo: state.titulo, autor: state.autor, isbn13: state.isbn13, tema: e.target.value, isbn13aux: state.isbn13aux });
 

@@ -18,7 +18,7 @@ ruta.post('/register', async (req, res) => {
   try {
     const user = await db.usuario.findOne({ where: { correo: correo } });
     if (user) {
-      res.status(401).json({ success: false, message: 'Ya existe un usuario con ese correo' });
+      res.json({ success: false, message: 'Ya existe un usuario con ese correo' });
     } else {
       let tipo_usuario = "usuario"
       const nuevoUsuario = await db.usuario.create({

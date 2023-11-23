@@ -54,29 +54,9 @@ const PaginaDestino = () => {
 
     }, [id_libro]);
 
-    useEffect(() => {
-        const recopilarIdUsuario = async () => {
-            try {
-                const response = await fetch('/api/filtrar/idusuario', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ usuario }),
-                });
-                const data = await response.json();
-                const { id_usuario } = data;
-                setid_usuario(id_usuario);
-            } catch (error) {
-                console.error('Error de conexión');
-            }
-        };
-        recopilarIdUsuario();
-
-    }, [id_libro]);
-
+    
     const [showCalendar, setShowCalendar] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     const toggleCalendar = () => {
         setShowCalendar(!showCalendar);
@@ -89,35 +69,42 @@ const PaginaDestino = () => {
     const [showMessage, setShowMessage] = useState(false);
     const [fechaentrega, setFechaEntrega] = useState(null);
     const registrarReserva = async () => {
-        // Crea un objeto de reserva con la fecha, usuario y título del libro
         const fechaEntrega = new Date(selectedDate);
-        fechaEntrega.setDate(fechaEntrega.getDate() + 30);
-        setFechaEntrega(fechaEntrega.toDateString());
-        try {
-            const response = await fetch('/api/register/reservas', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    fecha: selectedDate.toISOString(),
-                    fechaentrega: fechaEntrega.toISOString(),
-                    disponibilidad: 1,
-                    id_libro: id_libro,
-                    id_usuario: id_usuario
-                }),
-            });
-        } catch (error) {
-            console.log(error);
-            console.error('Error de conexión');
+        const fechaactual = new Date();
+        const fechaLimite = new Date(fechaactual);
+        fechaLimite.setDate(fechaactual.getDate() + 30);
+        if (fechaEntrega <= fechaactual || fechaEntrega > fechaLimite) {
+            alert("POR FAVOR, selecciona una fecha mayor al actual y no más de 30 días");
+            setShowCalendar(true);
+        } else {
+            try {
+                setFechaEntrega(fechaEntrega.toDateString());
+                const response = await fetch('/api/register/reservas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fecha: fechaactual.toISOString(),
+                        fechaentrega: selectedDate.toISOString(),
+                        disponibilidad: 1,
+                        id_libro: id_libro,
+                        usuario: usuario
+                    }),
+                });
+            } catch (error) {
+                console.log(error);
+                console.error('Error de conexión');
+            }
+            setShowCalendar(false);
+            setShowMessage(true);
         }
-        setShowCalendar(false);
-        setShowMessage(true);
     };
 
 
     const handleOKButtonClick = () => {
         setShowMessage(false);
+        console.log(fechaentrega);
         router.back();
     };
 

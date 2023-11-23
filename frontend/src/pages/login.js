@@ -29,8 +29,8 @@ const Logear = () => {
       });
 
       const data = await response.json();
-
-      if (response.ok) {
+      const {success} = data
+      if (success) {
         const { tipo_usuario } = data;
         if (tipo_usuario === "administrador") {
           const userData = { usuario }; // Objeto que contiene el nombre de usuario
@@ -61,11 +61,11 @@ const Logear = () => {
           <form onSubmit={validarLogeo}> {/* Agregamos onSubmit para manejar el envío del formulario */}
             <div className="input-container">
               <label className="form-label" htmlFor="usuario">Usuario o correo:</label>
-              <input className="form-input" type="text" id="usuario" name="usuario" onChange={mngmtChange} value={state.usuario} required />
+              <input className="form-input" type="text" id="usuario" name="usuario" onChange={mngmtChange} value={state.usuario} required autoComplete="current-password"/>
             </div>
             <div className="input-container">
               <label className="form-label" htmlFor="contrasena">Contraseña:</label>
-              <input className="form-input" type="password" id="contrasena" name="contrasena" onChange={mngmtChange} value={state.contrasena} required />
+              <input className="form-input" type="password" id="contrasena" name="contrasena" onChange={mngmtChange} value={state.contrasena} required autoComplete="current-password"/>
             </div>
             <div className="forgot-password-container">
               <Link href="/recover-password">Olvidé mi contraseña</Link>

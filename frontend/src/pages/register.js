@@ -2,11 +2,11 @@ import Link from 'next/link'
 import Head from 'next/head'
 
 import { useState } from "react"
+import { useRouter } from 'next/router'; 
 
 
 const Formulario = () => {
-  //acordarme del useState
-  //ESTADO para manejar validación de contraseñas
+  const router = useRouter();
   const [isValid, setIsValid] = useState(true)
 
   const [state, setState] = useState(
@@ -57,9 +57,10 @@ const Formulario = () => {
           JSON.stringify(state),
       });
       const data2 = await response.json();
-      if (response.ok) {
+      const {success} = data2;
+      if (success) {
         alert(data2.message || 'Registrado correctamente!');
-        window.location.href = "/login";
+        router.push("/login");
       } else {
         alert(data2.message || 'Error al registrar!');
       }
@@ -72,46 +73,42 @@ const Formulario = () => {
   return (
     <>
       <div className="title">Sistema de Reserva de Libros</div>
-      <div className="subtitle">Registro de Usuario</div> {/* Movido debajo del título */}
+      <div className="subtitle">Registro de Usuario</div> 
       <div className="container">
         <form onSubmit={mngmtSubmit}>
-          {/* Centrar todas las columnas y el botón horizontalmente */}
           <div className="center-container">
-            {/* Primera columna con 4 elementos */}
             <div className="column">
               <div className="columna-subtitulo" >Datos personales</div>
               <div className="input-container" onSubmit={mngmtSubmit}>
                 <label className="form-label" htmlFor="nombre">Nombres:</label>
-                <input className="form-input" type="text" id="nombre" name="nombre" onChange={mngmtChange} value={state.nombre} required />
+                <input className="form-input" type="text" id="nombre" name="nombre" onChange={mngmtChange} value={state.nombre} required autoComplete="current-password"/>
               </div>
               <div className="input-container" onSubmit={mngmtSubmit}>
                 <label className="form-label" htmlFor="apellido">Apellidos:</label>
-                <input className="form-input" type="text" id="apellido" name="apellido" onChange={mngmtChange} value={state.apellido} required />
+                <input className="form-input" type="text" id="apellido" name="apellido" onChange={mngmtChange} value={state.apellido} required autoComplete="current-password"/>
               </div>
               <div className="input-container" onSubmit={mngmtSubmit}>
                 <label className="form-label" htmlFor="tipo_documento">Tipo de Documento:</label>
-                <input className="form-input" type="text" id="tipo_documento" name="tipo_documento" onChange={mngmtChange} value={state.tipo_documento} required />
+                <input className="form-input" type="text" id="tipo_documento" name="tipo_documento" onChange={mngmtChange} value={state.tipo_documento} required autoComplete="current-password"/>
               </div>
               <div className="input-container" onSubmit={mngmtSubmit}>
                 <label className="form-label" htmlFor="nro_documento">Nro de Documento:</label>
-                <input className="form-input" type="text" id="nro_documento" name="nro_documento" onChange={mngmtChange} value={state.nro_documento} required />
+                <input className="form-input" type="text" id="nro_documento" name="nro_documento" onChange={mngmtChange} value={state.nro_documento} required autoComplete="current-password"/>
               </div>
             </div>
-
-            {/* Segunda columna con 3 elementos y el botón */}
             <div className="column">
               <div className='columna-subtitulo' >Datos de la cuenta</div>
               <div className="input-container" onSubmit={mngmtSubmit}>
                 <label className="form-label" htmlFor="correo">Correo Electrónico:</label>
-                <input className="form-input" type="email" id="correo" name="correo" onChange={mngmtChange} value={state.correo} required />
+                <input className="form-input" type="email" id="correo" name="correo" onChange={mngmtChange} value={state.correo} required autoComplete="current-password"/>
               </div>
               <div className="input-container" onSubmit={mngmtSubmit}>
                 <label className="form-label" htmlFor="password">Password:</label>
-                <input className="form-input" type="password" id="password" name="password" onChange={mngmtChange} value={state.password} required />
+                <input className="form-input" type="password" id="password" name="password" onChange={mngmtChange} value={state.password} required autoComplete="current-password"/>
               </div>
               <div className="input-container" onSubmit={mngmtSubmit}>
                 <label className="form-label" htmlFor="repetir_password">Repetir Password:</label>
-                <input className="form-input" type="password" id="repetir_password" name="repetir_password" onChange={mngmtChange} value={state.repetir_password} required />
+                <input className="form-input" type="password" id="repetir_password" name="repetir_password" onChange={mngmtChange} value={state.repetir_password} required autoComplete="current-password"/>
               </div>
               <div className="button-container" onSubmit={mngmtSubmit}>
                 <button className="register-button" >Registrar</button>

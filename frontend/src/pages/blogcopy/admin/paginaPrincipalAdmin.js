@@ -138,14 +138,14 @@ const Principal = () => {
           </div>
           <div className="linea"></div>
           <div className="seccion-igual-1">
-            <div class="titulo_seccion">Últimas reservas</div>
-            <div class="cartas_fila">
+            <div className="titulo_seccion">Últimas reservas</div>
+            <div className="cartas_fila">
               {reservas.slice(0, 2).map((reserva, index) => ( //RESERVAS TEST
                 <div className="carta" key={index}>
                   <div className="contenido">
                     <div className='Titulo_card'>
                       <h2>{reserva.reservalibro.titulo}</h2></div>
-                    <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}<span class="User_Card"> User: {reserva.usuariolibro.correo.split("@")[0]}</span></p>
+                    <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}<span className="User_Card"> User: {reserva.usuariolibro.correo.split("@")[0]}</span></p>
                   </div>
                   <div className="imagen">
                     <img src={reserva.reservalibro.imagen_portada_url} loading="lazzy" alt="/media.png" className="icono_default" />
@@ -157,8 +157,8 @@ const Principal = () => {
           </div>
 
           <div className="seccion-igual-2">
-            <div class="titulo_seccion">Los más pedidos</div>
-            <div class="cartas_fila">
+            <div className="titulo_seccion">Los más pedidos</div>
+            <div className="cartas_fila">
               {stats.map((libro, index) => (
                 <div className="carta" key={index}>
                   <div className="contenido">

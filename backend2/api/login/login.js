@@ -13,7 +13,7 @@ ruta.post('/login', async (req, res) => {
       if (user && user.password === contrasena) {
         res.json({ success: true, tipo_usuario: user.tipo_usuario });
       } else {
-        res.status(401).json({ success: false, message: 'No coincide la contraseña o usuario' });
+        res.json({ success: false, message: 'No coincide la contraseña o usuario' });
       }
     } catch (error) {
       console.error('Error al autenticar al usuario!!!!!!', error);
