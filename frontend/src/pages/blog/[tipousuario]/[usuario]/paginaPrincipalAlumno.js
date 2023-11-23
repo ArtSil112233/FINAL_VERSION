@@ -11,34 +11,35 @@ const Principal = () => {
   const [id_usuario, setId_usuario] = useState();
 
   useEffect(() => {
-    const recopilarNombreUsuario = async () => {
-      try {
-        const response = await fetch('/api/validar/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ usuario }),
-        });
-        const data = await response.json();
-        console.log("DATOS DE API VALIDAR USUARIO: ", data);
-        const { nombreDelAlumno, id_usuario } = data;
-        if (nombreDelAlumno) {
-          const nombreAlumnoArray = nombreDelAlumno.split(' ');
-          setPrimernombre(nombreAlumnoArray[0]);
-          setId_usuario(id_usuario);
+    if(usuario){
+      const recopilarNombreUsuario = async () => {
+        try {
+          const response = await fetch('/api/validar/users', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ usuario }),
+          });
+          const data = await response.json();
+          const { nombreDelAlumno, id_usuario } = data;
+          if (nombreDelAlumno) {
+            const nombreAlumnoArray = nombreDelAlumno.split(' ');
+            setPrimernombre(nombreAlumnoArray[0]);
+            setId_usuario(id_usuario);
+          }
+        } catch (error) {
+          console.error('Error de conexión');
         }
-      } catch (error) {
-        console.error('Error de conexión');
-      }
-    };
-
-    recopilarNombreUsuario();
+      };
+  
+      recopilarNombreUsuario();
+    }
+    
   }, [usuario]);
 
   //------- ULTIMOS RESERVADOS --------------------
   const [reservas, setReservas] = useState([]);
-  const [reservasActivas, setReservasActv] = useState([]);
   async function obtenerReservas() {
     try {
       const response = await fetch('/api/filtrar/reservasXid', {
@@ -52,8 +53,7 @@ const Principal = () => {
       const data = await response.json();
       if (response.ok) {
         const { reservas } = data;
-        setReservas(reservas);
-        setReservasActv(reservas.filter(reserv => reserv.disponibilidad === 1));
+        setReservas(reservas.filter(reserv => reserv.disponibilidad === 1));
       } else {
         alert(data.message || 'Error al encontrar reservas');
       }
@@ -127,7 +127,7 @@ const Principal = () => {
           <div className="linea2"></div>
           <div className="seccion-igual-1">
             <div className="titulo_seccion">Últimas reservas</div>
-            <div class="cartas_fila">
+            <div className="cartas_fila">
               {reservas.slice(-2).reverse().map((reserva, index) => ( //RESERVAS TEST
                 <div className="carta" key={index}>
                   <div className="contenido">
@@ -136,32 +136,32 @@ const Principal = () => {
                     <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}</p>
                   </div>
                   <div className="imagen">
-                    <img src={reserva.reservalibro.portada} loading="lazzy" alt="/media.png" className="icono_default" />
+                    <img src={reserva.reservalibro.imagen_portada_url} loading="lazzy" alt="/media.png" className="icono_default" />
                   </div>
                 </div>
               ))}
             </div>
-            <Link href={`/blog/alumno/${usuario}/paginaUltimasReservas`} class="ver-todo">Ver todo</Link>
+            <Link href={`/blog/alumno/${usuario}/paginaUltimasReservas`} className="ver-todo">Ver todo</Link>
           </div>
 
           <div className="seccion-igual-2">
             <div className="titulo_seccion">Proximos a vencer</div>
-            {/*
             <div className="cartas_fila">
-              {reservas.filter((libro) => libro.usuario == usuario).slice(-2).map((libro, index) => (
+              {reservas.sort(function(a, b) {
+                    return new Date(a.fechaentrega) - new Date(b.fechaentrega);
+                }).slice(0,2).map((reserva, index) => (
                 <div className="carta" key={index}>
                   <div className="contenido">
                     <div className='Titulo_card'>
-                      <h2>{libro.titulo}</h2></div>
-                    <p className='Fecha_card'>Fecha limite: {new Date(libro.fechaentrega).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}</p>
+                      <h2>{reserva.reservalibro.titulo}</h2></div>
+                    <p className='Fecha_card'>Fecha limite: {new Date(reserva.fechaentrega).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}</p>
                   </div>
                   <div className="imagen">
-                    <img src={libro.portada} alt="/media.png" className="icono_default" />
+                    <img src={reserva.reservalibro.imagen_portada_url} alt="/media.png" className="icono_default" />
                   </div>
                 </div>
               ))}
             </div>
-              */}
           </div>
         </>
       } />

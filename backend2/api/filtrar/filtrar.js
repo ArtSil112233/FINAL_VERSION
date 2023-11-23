@@ -10,7 +10,6 @@ ruta.post('/filtrarLibros', async (req, res) => {
   try {
     // 'Op.like': buscar coincidencias parciales en el título
     const libros = await db.libro.findAll({ where: { titulo: { [db.Sequelize.Op.like]: `%${inputText}%` } } });
-
     if (libros.length > 0) {
       res.json({ success: true, libros: libros });
     } else {
@@ -18,6 +17,33 @@ ruta.post('/filtrarLibros', async (req, res) => {
     }
   } catch (error) {
     console.error('Error al buscar las coincidencias de los libros!!!!!!', error);
+    res.status(500).json({ success: false, message: 'Error del servidor!' });
+  }
+});
+
+ruta.post('/LibrosTop', async (req, res) => {
+  try {
+    const topLibros = await db.reserva.findAll({
+      attributes: ['id_libro', [db.sequelize.fn('COUNT', 'id_libro'), 'count']],
+      group: ['id_libro'],
+      order: [[db.sequelize.literal('count'), 'DESC']]
+    });
+    let idsLibros = topLibros.map(reserva => reserva.id_libro).slice(0,2);
+    topLibros.forEach(reserva => {console.log(`Libro ID: ${reserva.id_libro}, Cuenta: ${reserva.get('count')}`);});
+    //console.log("ids_libros where: ", idsLibros);
+    const libros = await db.libro.findAll({
+      where: {
+        id: idsLibros
+      }
+    })
+    libros.forEach(reserva => {console.log(`Libro ID: ${reserva.id}, Titulo: ${reserva.titulo}`);});
+    if (libros) {
+      res.json({ success: true, libros: libros });
+    } else {
+      res.status(401).json({ success: false, libros: [] });
+    }
+  } catch (error) {
+    console.error('Error al buscar top libros', error);
     res.status(500).json({ success: false, message: 'Error del servidor!' });
   }
 });

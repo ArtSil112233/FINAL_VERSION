@@ -8,29 +8,33 @@ const Principal = () => {
   const router = useRouter();
   const { usuario } = router.query;
   const [primernombre, setPrimernombre] = useState('');
-
+  const [stats, setStats] = useState([]);
   useEffect(() => {
-    const recopilarNombreUsuario = async () => {
-      try {
-        const response = await fetch('/api/validar/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ usuario }),
-        });
-        const data = await response.json();
-        const { nombreDelAlumno } = data;
-        if (nombreDelAlumno) {
-          const nombreAlumnoArray = nombreDelAlumno.split(' ');
-          setPrimernombre(nombreAlumnoArray[0]);
+    if (usuario) {
+      const recopilarNombreUsuario = async () => {
+        try {
+          const response = await fetch('/api/validar/users', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ usuario }),
+          });
+          const data = await response.json();
+          const { nombreDelAlumno } = data;
+          if (nombreDelAlumno) {
+            const nombreAlumnoArray = nombreDelAlumno.split(' ');
+            setPrimernombre(nombreAlumnoArray[0]);
+          }
+        } catch (error) {
+          console.error('Error de conexión');
         }
-      } catch (error) {
-        console.error('Error de conexión');
-      }
-    };
+      };
 
-    recopilarNombreUsuario();
+      recopilarNombreUsuario();
+
+    }
+
   }, [usuario]);
 
   //------- ULTIMOS RESERVADOS --------------------
@@ -48,8 +52,7 @@ const Principal = () => {
       const data = await response.json();
       if (response.ok) {
         const { reservas } = data;
-        setReservas(reservas);
-        console.log("Reservas general: ", reservas);
+        setReservas(reservas.filter(reserv => reserv.disponibilidad === 1));
       } else {
         setReservas([]);
       }
@@ -59,9 +62,27 @@ const Principal = () => {
     }
 
   };
+  //LIBROS TOP
+  async function obtenerStats() {
+    try {
+      const response = await fetch('/api/filtrar/LibrosTop', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      const data = await response.json();
+      const { libros } = data;
+      setStats(libros);
+      console.log("DataStats", data);
+    } catch (error) {
+      console.error('Error de conexión');
+    }
+  };
 
   useEffect(() => {
     obtenerReservas();
+    obtenerStats();
   }, []);
 
 
@@ -122,7 +143,7 @@ const Principal = () => {
           <div className="seccion-igual-1">
             <div class="titulo_seccion">Últimas reservas</div>
             <div class="cartas_fila">
-              {reservas.slice(0, 2).map((reserva, index) => ( //RESERVAS TEST
+              {reservas.filter(reserv => reserv.disponibilidad === 1).slice(0, 2).map((reserva, index) => ( //RESERVAS TEST
                 <div className="carta" key={index}>
                   <div className="contenido">
                     <div className='Titulo_card'>
@@ -140,9 +161,8 @@ const Principal = () => {
 
           <div className="seccion-igual-2">
             <div class="titulo_seccion">Los más pedidos</div>
-            {/*
             <div class="cartas_fila">
-              {stats.slice(0, 2).map((libro, index) => (
+              {stats.map((libro, index) => (
                 <div className="carta" key={index}>
                   <div className="contenido">
                     <div className='Titulo_card'>
@@ -151,12 +171,11 @@ const Principal = () => {
                     <p className='Fecha_card'>{libro.autor}</p>
                   </div>
                   <div className="imagen">
-                    <img src={libro.portada} alt="/media.png" className="icono_default" />
+                    <img src={libro.imagen_portada_url} alt="/media.png" className="icono_default" />
                   </div>
                 </div>
               ))}
             </div>
-            */}
           </div>
         </>
       } />

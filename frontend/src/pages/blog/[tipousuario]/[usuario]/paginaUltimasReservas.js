@@ -23,6 +23,7 @@ const Principal = () => {
             });
             const data = await response.json();
             const { id_usuario } = data;
+            console.log("Data", data);
             setId_usuario(id_usuario);
             console.log("id_usuario", id_usuario);
         } catch (error) {
@@ -37,14 +38,15 @@ const Principal = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify()
+                }
             });
 
             const data = await response.json();
             if (response.ok) {
                 const { reservas } = data;
-                setReservas(reservas);
+                setReservas(reservas.filter(reserv => reserv.disponibilidad === 1).sort(function(a, b) {
+                    return b.id - a.id;
+                }));
                 console.log("Reservas general: ", reservas);
             } else {
                 alert(data.message || 'Error al encontrar reservas');
@@ -65,7 +67,7 @@ const Principal = () => {
                         <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}</p>
                     </div>
                     <div className="imagen">
-                        <img src={reserva.reservalibro.portada} alt="portada" className="icono_default" />
+                        <img src={reserva.reservalibro.imagen_portada_url} alt="portada" className="icono_default" />
                     </div>
                 </div>
             </>
@@ -83,7 +85,7 @@ const Principal = () => {
                         <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })} <span className="User_Card">User: {reserva.usuariolibro.correo.split("@")[0]}</span></p>
                     </div>
                     <div className="imagen">
-                        <img src={reserva.reservalibro.portada} alt="portada" className="icono_default" />
+                        <img src={reserva.reservalibro.imagen_portada_url} alt="portada" className="icono_default" />
                     </div>
                 </div>
             </>
@@ -134,11 +136,11 @@ const Principal = () => {
     }
 
     useEffect(() => {
-        if (!id_usuario) {
+        if(!id_usuario){
             obtenerId();
+            obtenerReservas();
         }
-        obtenerReservas();
-    }, [id_usuario]);
+    }, [id_usuario, reservas]);
 
     //LOGICA PARA IR AL INICIO
     const [MostrarValidacion, setMostrarValidacion] = useState(false);

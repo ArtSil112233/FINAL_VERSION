@@ -10,7 +10,8 @@ ruta.post('/users', async (req, res) => {
     try {
       const user = await db.usuario.findOne({ where: { correo: usuario } });
       if (user) {
-        res.status(201).json({ success: true, 
+        res.status(201).json({ success: true,
+            id_usuario: user.id, 
             nombreDelAlumno: user.nombre, 
             tipo_documento: user.tipo_documento,
             apellido: user.apellido,
