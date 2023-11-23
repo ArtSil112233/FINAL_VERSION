@@ -4,11 +4,11 @@ import { useRouter } from 'next/router';
 
 const Logear = () => {
   const [state, setState] = useState(
-    { usuario: "", contrasena: ""}
+    { usuario: "", contrasena: "" }
   )
   const router = useRouter();
 
- //CONSULTA API PARA VALIDAR SI ES USUARIO O ADMINISTRADOR (CASO CONTRARIO, EL ERROR SE EVIDENCIA EN EL MENSAJE)
+  //CONSULTA API PARA VALIDAR SI ES USUARIO O ADMINISTRADOR (CASO CONTRARIO, EL ERROR SE EVIDENCIA EN EL MENSAJE)
   function mngmtChange(e) {
     console.log(e.target.name, e.target.value)
     setState({ ...state, [e.target.name]: e.target.value })
@@ -24,18 +24,24 @@ const Logear = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: 
+        body:
           JSON.stringify(state),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         const { tipo_usuario } = data;
         if (tipo_usuario === "administrador") {
-          router.push(`/blog/admin/${usuario}/paginaPrincipalAdmin`);
+          const userData = { usuario }; // Objeto que contiene el nombre de usuario
+          localStorage.setItem("usuario", JSON.stringify(userData));
+          router.push(`/blogcopy/admin/paginaPrincipalAdmin`);
+          //router.push(`/blog/admin/${usuario}/paginaPrincipalAdmin`);
         } else {
-          router.push(`/blog/alumno/${usuario}/paginaPrincipalAlumno`);
+          const userData = { usuario }; // Objeto que contiene el nombre de usuario
+          localStorage.setItem("usuario", JSON.stringify(userData));
+          router.push(`/blogcopy/alumno/paginaPrincipalAlumno`);
+          //router.push(`/blog/alumno/${usuario}/paginaPrincipalAlumno`);
         }
       } else {
         // No coincide la contraseña o usuario
@@ -55,11 +61,11 @@ const Logear = () => {
           <form onSubmit={validarLogeo}> {/* Agregamos onSubmit para manejar el envío del formulario */}
             <div className="input-container">
               <label className="form-label" htmlFor="usuario">Usuario o correo:</label>
-              <input className="form-input" type="text" id="usuario" name="usuario" onChange={mngmtChange} value={state.usuario} required/>
+              <input className="form-input" type="text" id="usuario" name="usuario" onChange={mngmtChange} value={state.usuario} required />
             </div>
             <div className="input-container">
               <label className="form-label" htmlFor="contrasena">Contraseña:</label>
-              <input className="form-input" type="password" id="contrasena" name="contrasena" onChange={mngmtChange} value={state.contrasena} required/>
+              <input className="form-input" type="password" id="contrasena" name="contrasena" onChange={mngmtChange} value={state.contrasena} required />
             </div>
             <div className="forgot-password-container">
               <Link href="/recover-password">Olvidé mi contraseña</Link>

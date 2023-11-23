@@ -20,7 +20,8 @@ ruta.post('/users', async (req, res) => {
             password: user.password,
             idioma: user.idioma,
             prefijo: user.prefijo,
-            color: user.color      
+            color: user.color,
+            tipo_usuario : user.tipo_usuario    
         });
       } else {
         res.status(401).json({ success: false});
