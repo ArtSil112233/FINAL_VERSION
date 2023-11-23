@@ -44,9 +44,7 @@ const Principal = () => {
             const data = await response.json();
             if (response.ok) {
                 const { reservas } = data;
-                setReservas(reservas.filter(reserv => reserv.disponibilidad === 1).sort(function(a, b) {
-                    return b.id - a.id;
-                }));
+                setReservas(reservas);
                 console.log("Reservas general: ", reservas);
             } else {
                 alert(data.message || 'Error al encontrar reservas');

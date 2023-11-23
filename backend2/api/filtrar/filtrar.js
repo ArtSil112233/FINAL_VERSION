@@ -28,17 +28,21 @@ ruta.post('/LibrosTop', async (req, res) => {
       group: ['id_libro'],
       order: [[db.sequelize.literal('count'), 'DESC']]
     });
-    let idsLibros = topLibros.map(reserva => reserva.id_libro).slice(0,2);
-    topLibros.forEach(reserva => {console.log(`Libro ID: ${reserva.id_libro}, Cuenta: ${reserva.get('count')}`);});
+    let idsLibros = topLibros.map(reserva => reserva.id_libro).slice(0,2);//21 - 26
+    //topLibros.forEach(reserva => {console.log(`Libro ID: ${reserva.id_libro}, Cuenta: ${reserva.get('count')}`);});
     //console.log("ids_libros where: ", idsLibros);
     const libros = await db.libro.findAll({
       where: {
         id: idsLibros
       }
     })
-    libros.forEach(reserva => {console.log(`Libro ID: ${reserva.id}, Titulo: ${reserva.titulo}`);});
+    libros.sort((a, b) => {
+      return idsLibros.indexOf(a.id) - idsLibros.indexOf(b.id);
+    });
+    //libros.forEach(reserva => {console.log(`Libro ID: ${reserva.id}, Titulo: ${reserva.titulo}`);});
+    //console.log("enviando libros: ",libros)
     if (libros) {
-      res.json({ success: true, libros: libros });
+      res.json({ success: true, libros: libros});
     } else {
       res.status(401).json({ success: false, libros: [] });
     }
@@ -65,7 +69,9 @@ ruta.post('/filtrarReservas', async (req, res) => {
 ruta.post('/reservas_libros_usuario', async (req, res) => {
   try {
     const reservas = await db.reserva.findAll({
-      include: ['reservalibro', 'usuariolibro']
+      where:{'disponibilidad': 1},
+      include: ['reservalibro', 'usuariolibro'],
+      order: [['fecha','DESC']]
     });
     if (reservas.length > 0) {
       res.status(201).json({ success: true, reservas: reservas });
@@ -74,7 +80,7 @@ ruta.post('/reservas_libros_usuario', async (req, res) => {
     }
   } catch (error) {
     console.error('Error al buscar todas las reservas!!!!!!', error);
-    res.status(500).json({ success: false, message: 'Error del server!' });
+    res.status(500).json({ success: false, message: 'Error de reservas_libros_usuario!' });
   }
 });
 
@@ -85,8 +91,9 @@ ruta.post('/reservasXid', async (req, res) => {
   console.log("(API) Id_usuario recibido: ", id_usuario);
   try {
     const reservas = await db.reserva.findAll({
-      where: { 'id_usuario' : id_usuario}
+      where: { 'id_usuario' : id_usuario, 'disponibilidad': 1}
       ,include: ['reservalibro']
+      ,order: [['fecha','DESC']]
     }
     );
     console.log("(API) reservas de la busqueda: ", reservas);

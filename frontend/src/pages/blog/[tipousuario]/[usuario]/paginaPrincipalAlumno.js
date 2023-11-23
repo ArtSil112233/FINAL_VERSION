@@ -53,7 +53,7 @@ const Principal = () => {
       const data = await response.json();
       if (response.ok) {
         const { reservas } = data;
-        setReservas(reservas.filter(reserv => reserv.disponibilidad === 1));
+        setReservas(reservas.slice(0,2));
       } else {
         alert(data.message || 'Error al encontrar reservas');
       }
@@ -68,6 +68,10 @@ const Principal = () => {
       obtenerReservas();
     }
   }, [id_usuario]);
+
+  useEffect(() => {
+    console.log("Reservas: ", reservas);
+  }, [reservas])
 
   //LOGICA PARA IR AL INICIO
   const [MostrarValidacion, setMostrarValidacion] = useState(false);
@@ -128,7 +132,7 @@ const Principal = () => {
           <div className="seccion-igual-1">
             <div className="titulo_seccion">Últimas reservas</div>
             <div className="cartas_fila">
-              {reservas.slice(-2).reverse().map((reserva, index) => ( //RESERVAS TEST
+              {reservas.map((reserva, index) => ( //RESERVAS TEST
                 <div className="carta" key={index}>
                   <div className="contenido">
                     <div className='Titulo_card'>

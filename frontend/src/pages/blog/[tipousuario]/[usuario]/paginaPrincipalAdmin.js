@@ -52,7 +52,7 @@ const Principal = () => {
       const data = await response.json();
       if (response.ok) {
         const { reservas } = data;
-        setReservas(reservas.filter(reserv => reserv.disponibilidad === 1));
+        setReservas(reservas);
       } else {
         setReservas([]);
       }
@@ -84,6 +84,10 @@ const Principal = () => {
     obtenerReservas();
     obtenerStats();
   }, []);
+
+  useEffect(() => {
+    console.log("Reservas: ", reservas);
+  }, [reservas])
 
 
   //LOGICA PARA IR AL INICIO
@@ -143,7 +147,7 @@ const Principal = () => {
           <div className="seccion-igual-1">
             <div class="titulo_seccion">Últimas reservas</div>
             <div class="cartas_fila">
-              {reservas.filter(reserv => reserv.disponibilidad === 1).slice(0, 2).map((reserva, index) => ( //RESERVAS TEST
+              {reservas.slice(0,2).map((reserva, index) => ( //RESERVAS TEST
                 <div className="carta" key={index}>
                   <div className="contenido">
                     <div className='Titulo_card'>
