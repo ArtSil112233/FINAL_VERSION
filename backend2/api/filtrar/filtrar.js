@@ -69,7 +69,7 @@ ruta.post('/filtrarReservas', async (req, res) => {
 ruta.post('/reservas_libros_usuario', async (req, res) => {
   try {
     const reservas = await db.reserva.findAll({
-      where:{'disponibilidad': 1},
+      //where:{'disponibilidad': 1},
       include: ['reservalibro', 'usuariolibro'],
       order: [['fecha','DESC']]
     });

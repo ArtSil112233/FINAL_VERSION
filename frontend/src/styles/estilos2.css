@@ -69,18 +69,25 @@ body {
   display: flex; /* Usar flexbox para centrar vertical y horizontalmente */
   flex-direction: column; /* Apilar enlaces verticalmente */
   justify-content: flex-start; /* Alinear arriba verticalmente */
-  align-items: left; /* Centrar horizontalmente */
-  height: 100%; /* Ocupar todo el espacio vertical disponible */
+  align-items: left; 
+  height: 100%; 
 }
 
 /* Estilo para los enlaces dentro de la lista sin subrayado */
-.opciones ul li a {
+.opciones ul li button {
   text-decoration: none; /* Elimina el subrayado */
+  border: none;
   color: rgb(93, 1, 93); /* Color morado */
   line-height: 2.5; /* Interlineado de 1.5 */
   margin-left: 40px; /* Agrega margen izquierdo para mover al centro */
+  margin-bottom: 5%;
   font-weight: bold;
+  font-size:large;
+  cursor: pointer;
+  background-color: transparent;
 }
+
+
 
 /* Estilo para centrar el texto "Biblio v1.0.1-Alpha" en la parte inferior */
 .version {
@@ -99,6 +106,7 @@ body {
 /* Estilo para la sección título */
 .seccion-titulo {
   padding: 20px; /* Aumenta el espacio interno para hacer el título más grande */
+  margin-top: 5%;
 }
 
 .seccion-titulo h2 {

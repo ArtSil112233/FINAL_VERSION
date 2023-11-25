@@ -65,7 +65,7 @@ const Principal = () => {
   };
 
   useEffect(() => {
-    if (id_usuario) {
+    if (id_usuario || id_usuario == 0) {
       obtenerReservas();
     }
   }, [id_usuario]);

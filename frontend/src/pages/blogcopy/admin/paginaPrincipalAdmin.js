@@ -51,7 +51,7 @@ const Principal = () => {
       const data = await response.json();
       if (response.ok) {
         const { reservas } = data;
-        setReservas(reservas);
+        setReservas(reservas.filter((reserva) => reserva.disponibilidad == 1));
       } else {
         setReservas([]);
       }
@@ -153,7 +153,7 @@ const Principal = () => {
                 </div>
               ))}
             </div>
-            <button onClick={() => redirigirConUsuario(`/blogcopy/paginaUltimasReservas`)}>Ver todo</button>
+            <button className= "ver_todo" onClick={() => redirigirConUsuario(`/blogcopy/paginaUltimasReservas`)}>Ver todo</button>
           </div>
 
           <div className="seccion-igual-2">

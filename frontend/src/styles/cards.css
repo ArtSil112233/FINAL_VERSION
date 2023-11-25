@@ -30,8 +30,29 @@
     background-color: #FEF7FF;
 }
 
+.carta_off {
+    width: calc(50% - 10px);
+    height: 150px;
+    border: 2px solid grey;
+    margin-right: 20px;    /* Espacio entre las cartas */
+    box-sizing: border-box;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    background-color: grey;
+}
+
 /* Estilo para el contenido de las cartas con clase "contenido" dentro de "carta" */
 .cartas_fila .carta .contenido {
+    padding: 20px;
+    padding-top: auto;
+    padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 65%;
+}
+.cartas_fila .carta_off .contenido {
     padding: 20px;
     padding-top: auto;
     padding-left: 40px;
@@ -48,6 +69,13 @@
     flex: 1;
 
 }
+.cartas_fila .carta_off .imagen {
+    width: 5px;
+    display: flex;
+    justify-content: flex-end;
+    flex: 1;
+
+}
 
 /* Estilo para la imagen dentro del contenedor de imagen */
 .cartas_fila .carta .imagen img.icono_default {
@@ -56,19 +84,27 @@
     border-radius: 10px;
 }
 
+/* Estilo para la imagen dentro del contenedor de imagen */
+.cartas_fila .carta_off .imagen img.icono_default {
+    max-width: 150px;
+    max-height: 100%;
+    border-radius: 10px;
+}
 /* Estilo para el enlace "Ver todo" dentro de "seccion-igual-1" */
-.seccion-igual-1 .ver-todo {
+.seccion-igual-1 button {
     position: relative;
     /* Establece la posición absoluta */
     text-decoration: none;
     color: black;
     font-family: Roboto;
-    font-size: 25px;
-    font-style: normal;
+    font-size:x-large;
     bottom: 0%;
-    right: -1430px;
+    padding-right: 2%;
+    float: right;
     font-weight: bold;
-
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
 }
 
 .Fecha_card {

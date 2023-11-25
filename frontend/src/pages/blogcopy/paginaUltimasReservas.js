@@ -66,9 +66,9 @@ const Principal = () => {
     };
 
     function crearCarta(index, reserva) {
-        return (
+        const cartasFila = (
             <>
-                <div className="carta" key={index}>
+                <div className={reserva.disponibilidad == 1? ("carta"): ("carta_off") } key={index}>
                     <div className="contenido">
                         <div className='Titulo_card'>
                             <h2>{reserva.reservalibro.titulo}</h2></div>
@@ -78,147 +78,148 @@ const Principal = () => {
                         <img src={reserva.reservalibro.imagen_portada_url} alt="portada" className="icono_default" />
                     </div>
                 </div>
-            </>
-        )
+            </>                
+        );
+        return(cartasFila);
     }
 
-    function crearCartaUSER(index, reserva) {
-        return (
-            <>
-                <div className="carta" key={index}>
-                    <div className="contenido">
-                        <div className='Titulo_card'>
-                            <h2 >{reserva.reservalibro.titulo}</h2>
-                        </div>
-                        <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })} <span className="User_Card">User: {reserva.usuariolibro.correo.split("@")[0]}</span></p>
-                    </div>
-                    <div className="imagen">
-                        <img src={reserva.reservalibro.imagen_portada_url} alt="portada" className="icono_default" />
-                    </div>
-                </div>
-            </>
-        )
-    }
-
-    function mostrarLibros(reservas) {
-        const resultado = [];
-
-        for (let i = 0; i < reservas.length; i += 2) {
-            const cartasFila = (
-                <div className='cartas_fila' key={i}>
-                    {crearCarta(i, reservas[i])}
-                    {i + 1 < reservas.length && (
-                        crearCarta(i + 1, reservas[i + 1])
-                    )}
-                </div>
-            );
-            resultado.push(cartasFila);
-        }
-
-        return resultado;
-    }
-    function mostrarLibrosADMIN(reservas) {
-        const resultado = [];
-
-        for (let i = 0; i < reservas.length; i += 2) {
-            const cartasFila = (
-                <div className='cartas_fila' key={i}>
-                    {crearCartaUSER(i, reservas[i])}
-                    {i + 1 < reservas.length && (
-                        crearCartaUSER(i + 1, reservas[i + 1])
-                    )}
-                </div>
-            );
-            resultado.push(cartasFila);
-        }
-
-        return resultado;
-    }
-
-    function userORadmin(tipo) {
-        if (tipo == "admin") {
-            return "Admin"
-        } else {
-            return "Alumno"
-        }
-    }
-
-    useEffect(() => {
-        if (!id_usuario) {
-            obtenerId();
-            obtenerReservas();
-        }
-    }, [id_usuario, reservas]);
-
-    //LOGICA PARA IR AL INICIO
-    const [MostrarValidacion, setMostrarValidacion] = useState(false);
-    function ValidacionDeSalida() {
-        setMostrarValidacion(true);
-    }
-    function confirmacionSalida() {
-        router.push("/login");
-    }
-    function nosalir() {
-        setMostrarValidacion(false);
-    }
-
-    //LOGICA RUTAS
-    const redirigirConUsuario = (ruta) => {
-        const userData = { usuario };
-        localStorage.setItem("usuario", JSON.stringify(userData));
-        router.push(ruta);
-    };
+function crearCartaUSER(index, reserva) {
     return (
         <>
-            <Layout content={
-                <>
-                    <div className="contenidoizquierda">
-                        <div className="opciones">
-                            <ul>
-                                {tipousuario === "usuario" && (
-                                    <>
-                                        <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaPrincipalAlumno`)}>Inicio</button></li>
-                                        <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaPerfilAlumno`)}>Perfil</button></li>
-                                        <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaResultadosAlumno`)}>Bibliotecas</button></li>
-                                        <li><button onClick={ValidacionDeSalida}>Salir</button></li>
-                                    </>
-                                )}
-                                {tipousuario === "administrador" && (
-                                    <>
-                                        <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
-                                        <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaPerfilAdmin`)}>Perfil</button></li>
-                                        <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
-                                        <li><button onClick={ValidacionDeSalida}>Salir</button></li>
-                                    </>
-                                )}
-                                {MostrarValidacion && (
-                                    <>
-                                        <div className="confirmacion-fondo">
-                                            <div className="seccion-confirmacion-2">
-                                                <h1>¿Seguro que quiere salir?</h1>
-                                                <button className="buttonfecha" onClick={confirmacionSalida}>SÍ</button>
-                                                <button className="buttonfecha" onClick={nosalir}>NO</button>
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-                            </ul>
-                        </div>
-                        <p className="version">Biblio v1.0.1-Alpha</p>
+            <div className="carta" key={index}>
+                <div className="contenido">
+                    <div className='Titulo_card'>
+                        <h2 >{reserva.reservalibro.titulo}</h2>
                     </div>
-                    <div className="seccion-titulo">
-                        <h2>Utimas reservas</h2>
-                    </div>
-                    <div className="linea2"></div>
-                    <div className="ultimas_reservas_pag_block">
-                        {tipousuario === "administrador" ? (
-                            mostrarLibrosADMIN(reservas, 2)
-                        ) : mostrarLibros(reservas.filter((reserva) => reserva.id_usuario == id_usuario), 2)}
-                    </div>
-                </>
-            } />
+                    <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })} <span className="User_Card">User: {reserva.usuariolibro.correo.split("@")[0]}</span></p>
+                </div>
+                <div className="imagen">
+                    <img src={reserva.reservalibro.imagen_portada_url} alt="portada" className="icono_default" />
+                </div>
+            </div>
         </>
     )
+}
+
+function mostrarLibros(reservas) {
+    const resultado = [];
+
+    for (let i = 0; i < reservas.length; i += 2) {
+        const cartasFila = (
+            <div className='cartas_fila' key={i}>
+                {crearCarta(i, reservas[i])}
+                {i + 1 < reservas.length && (
+                    crearCarta(i + 1, reservas[i + 1])
+                )}
+            </div>
+        );
+        resultado.push(cartasFila);
+    }
+
+    return resultado;
+}
+function mostrarLibrosADMIN(reservas) {
+    const resultado = [];
+
+    for (let i = 0; i < reservas.length; i += 2) {
+        const cartasFila = (
+            <div className='cartas_fila' key={i}>
+                {crearCartaUSER(i, reservas[i])}
+                {i + 1 < reservas.length && (
+                    crearCartaUSER(i + 1, reservas[i + 1])
+                )}
+            </div>
+        );
+        resultado.push(cartasFila);
+    }
+
+    return resultado;
+}
+
+function userORadmin(tipo) {
+    if (tipo == "admin") {
+        return "Admin"
+    } else {
+        return "Alumno"
+    }
+}
+
+useEffect(() => {
+    if (!id_usuario) {
+        obtenerId();
+        obtenerReservas();
+    }
+}, [id_usuario, reservas]);
+
+//LOGICA PARA IR AL INICIO
+const [MostrarValidacion, setMostrarValidacion] = useState(false);
+function ValidacionDeSalida() {
+    setMostrarValidacion(true);
+}
+function confirmacionSalida() {
+    router.push("/login");
+}
+function nosalir() {
+    setMostrarValidacion(false);
+}
+
+//LOGICA RUTAS
+const redirigirConUsuario = (ruta) => {
+    const userData = { usuario };
+    localStorage.setItem("usuario", JSON.stringify(userData));
+    router.push(ruta);
+};
+return (
+    <>
+        <Layout content={
+            <>
+                <div className="contenidoizquierda">
+                    <div className="opciones">
+                        <ul>
+                            {tipousuario === "usuario" && (
+                                <>
+                                    <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaPrincipalAlumno`)}>Inicio</button></li>
+                                    <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaPerfilAlumno`)}>Perfil</button></li>
+                                    <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaResultadosAlumno`)}>Bibliotecas</button></li>
+                                    <li><button onClick={ValidacionDeSalida}>Salir</button></li>
+                                </>
+                            )}
+                            {tipousuario === "administrador" && (
+                                <>
+                                    <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
+                                    <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaPerfilAdmin`)}>Perfil</button></li>
+                                    <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
+                                    <li><button onClick={ValidacionDeSalida}>Salir</button></li>
+                                </>
+                            )}
+                            {MostrarValidacion && (
+                                <>
+                                    <div className="confirmacion-fondo">
+                                        <div className="seccion-confirmacion-2">
+                                            <h1>¿Seguro que quiere salir?</h1>
+                                            <button className="buttonfecha" onClick={confirmacionSalida}>SÍ</button>
+                                            <button className="buttonfecha" onClick={nosalir}>NO</button>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </ul>
+                    </div>
+                    <p className="version">Biblio v1.0.1-Alpha</p>
+                </div>
+                <div className="seccion-titulo">
+                    <h2>Utimas reservas</h2>
+                </div>
+                <div className="linea2"></div>
+                <div className="ultimas_reservas_pag_block">
+                    {tipousuario === "administrador" ? (
+                        mostrarLibrosADMIN(reservas, 2)
+                    ) : mostrarLibros(reservas.filter((reserva) => reserva.id_usuario == id_usuario), 2)}
+                </div>
+            </>
+        } />
+    </>
+)
 }
 
 export default Principal;
