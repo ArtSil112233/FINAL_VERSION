@@ -69,10 +69,40 @@ const AgregarNuevo = () => {
     //------------------------------------------------------------------------------
 
     const [flag, setFlag] = useState(false);
+    const [flag2, setFlag2] = useState(false);
     const handleGuardarClick = async (event) => {
         event.preventDefault();
         await actualizarLibro(state);
     };
+    const handleGuardarClick2 = async (event) => {
+        event.preventDefault();
+        setFlag2(true);
+    };
+    function noeliminar() {
+        setFlag2(false);
+    }
+    async function eliminar(id_libro) {
+        try {
+            const response = await fetch('/api/eliminar/libro', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id_libro }),
+            });
+            const data = await response.json();
+            if (data.success) {
+                setFlag(true);
+                const userData = { usuario };
+                localStorage.setItem("usuario", JSON.stringify(userData));
+                router.push(`/blogcopy/admin/paginaResultadosAdmin`);
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error de conexión');
+        }
+    }
     async function actualizarLibro(nuevosDatos) {
         try {
             const response = await fetch('/api/editarlibro/editar', {
@@ -226,6 +256,7 @@ const AgregarNuevo = () => {
                                 </div>
                                 <div className="button-container-2" >
                                     <button className="register-button-2" disabled={!(state.titulo && state.autor && state.isbn13 && state.tema)} onClick={handleGuardarClick}>Guardar</button>
+                                    <button className="register-button-2" onClick={handleGuardarClick2}>Eliminar libro</button>
                                 </div>
                             </div>
                         </form>
@@ -239,8 +270,17 @@ const AgregarNuevo = () => {
                             </div>
 
                         )}
-                    </div>
+                        {flag2 && (
+                            <div className="confirmacion-fondo">
+                                <div className="confirmacion">
+                                    <h2>¿Seguro que deseas eliminar el libro?</h2>
+                                    <button onClick={eliminar(id_libro)}>SÍ</button>
+                                    <button onClick={noeliminar}>NO</button>
+                                </div>
+                            </div>
 
+                        )}
+                    </div>
                 </div>
 
 

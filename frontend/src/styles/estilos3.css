@@ -84,6 +84,14 @@
     padding: 15px 40px;
     border: none;
 }
+.seccion-titulo-resultados23 button {
+    background-color: #6750A4;
+    color: white;
+    border-radius: 20px;
+    padding: 15px 40px;
+    border: none;
+}
+
 
 
 
@@ -146,16 +154,13 @@
 .paginacion {
     display: flex;
     justify-content: flex-end;
+    margin-left: 350px;
     /* Coloca la paginación en la parte derecha */
-    margin-top: 130px;
     /* Agrega espacio superior */
 }
 
 /* Estilos para los botones de paginación */
-.paginacion button {
-    margin-left: 10px;
-    /* Espacio entre los botones */
-}
+
 
 .bloque-libro button {
     background-color: #6750A4;

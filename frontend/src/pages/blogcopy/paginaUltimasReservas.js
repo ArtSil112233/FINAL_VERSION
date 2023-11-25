@@ -136,13 +136,6 @@ function mostrarLibrosADMIN(reservas) {
     return resultado;
 }
 
-function userORadmin(tipo) {
-    if (tipo == "admin") {
-        return "Admin"
-    } else {
-        return "Alumno"
-    }
-}
 
 useEffect(() => {
     if (!id_usuario) {

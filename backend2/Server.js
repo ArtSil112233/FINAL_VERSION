@@ -10,6 +10,7 @@ const validar = require('./api/validar/validar')
 const actualizarAdmin = require('./api/actualizarAdmin/actualizarAdmin')
 const filtrar = require('./api/filtrar/filtrar')
 const editarlibro = require('./api/editarlibro/editarlibro')
+const eliminar = require('./api/eliminar/eliminar')
 
 const app = express()
 const port = 3080
@@ -26,6 +27,7 @@ app.use('/api/validar' , validar);
 app.use('/api/actualizarAdmin' , actualizarAdmin);
 app.use('/api/filtrar' , filtrar);
 app.use('/api/editarlibro' , editarlibro);
+app.use('/api/eliminar' , eliminar);
 
 
 

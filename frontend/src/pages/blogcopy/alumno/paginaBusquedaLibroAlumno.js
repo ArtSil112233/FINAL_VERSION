@@ -288,13 +288,12 @@ const Principal = () => {
                         })}
                     </div>
                     <div className="paginacion-2">
+                        <h4>Página {paginaActual} de {(Math.ceil((coincidencias.length) / resultadosPorPagina))}</h4>
                         <button onClick={irAPaginaAnterior} disabled={paginaActual === 1}>
                             {'<'}
                         </button>
-                        <button
-                            onClick={irAPaginaSiguiente}
-                            disabled={paginaActual === Math.ceil(coincidencias.length / resultadosPorPagina)}
-                        >
+                        <h4>{paginaActual}... {(Math.ceil((coincidencias.length) / resultadosPorPagina))}</h4>
+                        <button onClick={irAPaginaSiguiente} disabled={paginaActual === (Math.ceil((coincidencias.length) / resultadosPorPagina))}>
                             {'>'}
                         </button>
                     </div>

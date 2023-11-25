@@ -140,12 +140,22 @@ body {
   justify-content: space-between; /* Coloca el título a la izquierda y el botón a la derecha */
   align-items: center; /* Centra verticalmente los elementos */
   padding: 20px; /* Añade espacio interno para separar el contenido */
-  margin-top: 30px;
+  margin-top: 45px;
+}
+.seccion-titulo-resultados23 {
+  display: flex; /* Utilizamos flexbox para alinear elementos horizontalmente */
+  justify-content: space-between; /* Coloca el título a la izquierda y el botón a la derecha */
+  align-items: center; /* Centra verticalmente los elementos */
+  padding: 20px; /* Añade espacio interno para separar el contenido */
+  margin-top: -125px;
 }
 .titulo h2{
   margin-left: -20px;
 }
 .seccion-titulo-resultados .titulo {
+  flex: 1; /* Ocupa el espacio disponible */
+}
+.seccion-titulo-resultados23 .titulo {
   flex: 1; /* Ocupa el espacio disponible */
 }
 
@@ -261,6 +271,25 @@ label[for="cargarImagen"] {
   display: flex;
   justify-content: center; /* Centrar horizontalmente */
   margin-top: 10px;
+}
+.button-container-3 {
+  display: flex;
+  justify-content: center;
+  margin-left: -160px; 
+  margin-top: 10px;
+}
+.button-container-3 button {
+  margin-right: 100px; 
+}
+.button-container-4 {
+  display: flex;
+  justify-content: center; 
+  margin-left: -220px;
+  max-width: 100%;
+}
+
+.button-container-4 button {
+  margin-right: 0px; 
 }
 
 .register-button-2 {

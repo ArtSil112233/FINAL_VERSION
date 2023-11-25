@@ -20,11 +20,13 @@ const Principal = () => {
         };
         recopilarRouterValue();
     }, [])
+    const [flag, setFlag] = useState(false);
     useEffect(() => {
         if (inputText === '') {
             setCoincidencias([]);
+            setReservas([]);
         } else {
-            const recopilarNombreUsuario = async () => {
+            const filtrarlibros = async () => {
                 try {
                     const response = await fetch('/api/filtrar/filtrarLibros', {
                         method: 'POST',
@@ -41,9 +43,35 @@ const Principal = () => {
                     console.error('Error de conexión');
                 }
             };
-            recopilarNombreUsuario();
+            filtrarlibros();
         }
     }, [inputText]);
+    useEffect(() => {
+        async function obtenerReservas() {
+            try {
+                const response = await fetch('/api/filtrar/reservas_libros_usuario', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify()
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    const { reservas } = data;
+                    setReservas(reservas);
+                } else {
+                    setReservas([]);
+                }
+            } catch (error) {
+                console.error('Error al realizar la solicitud:', error);
+                alert('Error al realizar la solicitud');
+            }
+
+        };
+        obtenerReservas();
+    }, [inputText, flag]); // OSEA CUADNO CUANDO CAMBIE EN INPUT O EL FLAG
 
     const irAPaginaSiguiente = () => {
         if ((paginaActual) * resultadosPorPagina <= coincidencias.length) {
@@ -60,40 +88,66 @@ const Principal = () => {
             setPaginaActual(paginaActual - 1);
         }
     };
-
-    // Calcula los índices de inicio y fin para mostrar los resultados de la página actual
-    const indiceInicio = (paginaActual - 1) * resultadosPorPagina;
-    const indiceFin = indiceInicio + resultadosPorPagina;
-
-    const [reservas, setReservas] = useState([]);
-
-    async function obtenerReservas() {
+    const eliminarReserva = async () => {
+        setFlag(true);
+    };
+    function noeliminar() {
+        setFlag(false);
+    }
+    async function eliminar(id_libro) {
         try {
-            const response = await fetch('/api/filtrar/filtrarReservas', {
+            console.log(id_libro);
+            const response = await fetch('/api/eliminar/reserva', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ inputText }),
+                body: JSON.stringify({ id_libro }),
             });
             const data = await response.json();
-            const { reservas } = data;
-            if (response.ok) {
-                const { reservas } = data;
-                setReservas(reservas);
-                console.log("Reservas general: ", reservas);
+            if (data.success) {
+                setFlag(false);
             } else {
-                setReservas([]);
+                alert(data.message);
             }
         } catch (error) {
             console.error('Error de conexión');
         }
     }
 
-    useEffect(() => {
-        obtenerReservas();
-    }, []);
+    // Calcula los índices de inicio y fin para mostrar los resultados de la página actual
+    const indiceInicio = (paginaActual - 1) * resultadosPorPagina;
+    const indiceFin = indiceInicio + resultadosPorPagina;
 
+    const [reservas, setReservas] = useState([]);
+    /*
+        async function obtenerReservas() {
+            try {
+                const response = await fetch('/api/filtrar/filtrarReservas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ inputText }),
+                });
+                const data = await response.json();
+                const { reservas } = data;
+                if (response.ok) {
+                    const { reservas } = data;
+                    setReservas(reservas);
+                    console.log("Reservas general: ", reservas);
+                } else {
+                    setReservas([]);
+                }
+            } catch (error) {
+                console.error('Error de conexión');
+            }
+        }
+    
+        useEffect(() => {
+            obtenerReservas();
+        }, []);
+    */
     function buscar(id_libro) {
         const queryParams = {
             id_libro
@@ -153,7 +207,7 @@ const Principal = () => {
                         </div>
                         <p className="version">Biblio v1.0.1-Alpha</p>
                     </div>
-                    <div className="seccion-titulo-resultados">
+                    <div className="seccion-titulo-resultados23">
                         <div className="titulo">
                             <h2>Biblioteca</h2>
                         </div>
@@ -176,6 +230,16 @@ const Principal = () => {
                             onChange={(e) => setInputText(e.target.value)}
                             placeholder="Buscar por título"
                         />
+                        <div className="paginacion">
+                            <h4>Página {paginaActual} de {(Math.ceil((coincidencias.length) / resultadosPorPagina))}</h4>
+                            <button onClick={irAPaginaAnterior} disabled={paginaActual === 1}>
+                                {'<'}
+                            </button>
+                            <h4>{paginaActual}... {(Math.ceil((coincidencias.length) / resultadosPorPagina))}</h4>
+                            <button onClick={irAPaginaSiguiente} disabled={paginaActual === (Math.ceil((coincidencias.length) / resultadosPorPagina))}>
+                                {'>'}
+                            </button>
+                        </div>
                     </div>
                     <div className="seccion-rectangular-gris">
                         {coincidencias.slice(indiceInicio, indiceFin).map((libro, index) => {
@@ -221,24 +285,36 @@ const Principal = () => {
                                     </div>
                                     {isBotonDeshabilitado && (
                                         <>
-                                            <div className="MensajeNoDisp">El libro está reservado</div>
+                                            <div className="MensajeNoDisp">Libro reservado por: <b>{(reservas.find((reserva) => reserva.id_libro === libro.id)).usuariolibro.correo}</b></div>
+                                            <div className="button-container-3" >
+                                                <button onClick={() => buscar(libro.id)}>EDITAR</button>
+                                                <button onClick={eliminarReserva}>ELIMINAR</button>
+                                            </div>
                                         </>
                                     )}
-                                    <button onClick={() => buscar(libro.id)}>EDITAR</button>
+                                    {!isBotonDeshabilitado && (
+                                        <>
+                                            <button onClick={() => buscar(libro.id)} style={{ marginTop: '19px' }}>EDITAR</button>
+                                        </>
+                                    )}
+                                    {isBotonDeshabilitado && flag && (
+                                        <div className="confirmacion-fondo">
+                                            <div className="confirmacion">
+                                                <h2>¿Seguro que deseas eliminar esta reserva?</h2>
+                                                <div className="button-container-4" >
+                                                    {console.log("ID DEL LIBRO")}
+                                                    {console.log(libro)}
+                                                    <button onClick={() => eliminar(libro.id)}>SÍ</button>
+                                                    <button onClick={noeliminar}>NO</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    )}
                                 </div>
                             );
                         })}
                     </div>
-
-                    <div className="paginacion">
-                        <button onClick={irAPaginaAnterior} disabled={paginaActual === 1}>
-                            {'<'}
-                        </button>
-                        <button onClick={irAPaginaSiguiente} disabled={paginaActual === (Math.ceil((coincidencias.length) / resultadosPorPagina))}>
-                            {'>'}
-                        </button>
-                    </div>
-
                 </>
             } />
         </>
