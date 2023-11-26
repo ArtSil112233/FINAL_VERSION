@@ -21,12 +21,11 @@ module.exports = (sequelize, DataTypes) => {
     nro_documento: DataTypes.STRING,
     correo: DataTypes.STRING,
     password: DataTypes.STRING,
-    repetir_password: DataTypes.STRING,
-    imagen_url: DataTypes.TEXT,
     idioma: DataTypes.STRING,
     prefijo: DataTypes.STRING,
     color: DataTypes.STRING,
-    tipo_usuario: DataTypes.STRING
+    tipo_usuario: DataTypes.STRING,
+    direccion_imagen_url: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'usuario',

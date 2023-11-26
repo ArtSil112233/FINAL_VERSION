@@ -15,6 +15,7 @@ const Principal = () => {
   const [correo, setCorreo] = useState('');
   const [correoaux, setCorreoaux] = useState('');
   const [password, setPassword] = useState('');
+  const [direccion_imagen_url, setImagenURL] = useState(null);
   const [idioma, setIdioma] = useState('');
   const [prefijo, setPrefijo] = useState('');
   const [color, setColor] = useState('');
@@ -50,6 +51,7 @@ const Principal = () => {
           const { idioma } = data;
           const { prefijo } = data;
           const { color } = data;
+          const { direccion_imagen_url} = data;
           setNombre(nombreDelAlumno);
           setTipoDOC(tipo_documento);
           setApellidos(apellido);
@@ -61,6 +63,7 @@ const Principal = () => {
           setIdioma(idioma);
           setPrefijo(prefijo);
           setColor(color);
+          setImagenURL(direccion_imagen_url);
           const nombreAlumnoArray = (nombreDelAlumno).split(' ');
           setPrimernombre(nombreAlumnoArray[0]);
         } catch (error) {
@@ -73,7 +76,6 @@ const Principal = () => {
 
   //--------------------------------------------------------------------------------------------------------------------------------------------
   //LOGICA PARA CARGAR IMAGEN
-  const [imagenURL, setImagenURL] = useState(null);
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
@@ -91,7 +93,7 @@ const Principal = () => {
 
   //-----------------------DATOS PERSONALES---------------------------------------
   const [state1, setState1] = useState(
-    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' }
+    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' , direccion_imagen_url: null}
   )
   const handleGuardarClick2 = () => {
     actualizarJSONcasoDATOSPERSONALES(state1);
@@ -119,7 +121,7 @@ const Principal = () => {
   }
   //-----------------------CUENTA---------------------------------------
   const [state2, setState2] = useState(
-    { correo: '', password: '', correoaux: '' }
+    { correo: '', password: '', correoaux: '' , direccion_imagen_url: null}
   )
   async function handleGuardarClick() {
     await actualizarJSONcasoCUENTA(state2);
@@ -198,24 +200,24 @@ const Principal = () => {
           </div>
           <div className="linea"></div>
           <div className="seccion-perfil">
-            <div className="imagen-admin">
-              {imagenURL && (
+          <div className="imagen-admin">
+              {direccion_imagen_url && (
                 <><img
-                  src={imagenURL}
+                  src={direccion_imagen_url}
                   alt="Imagen del alumno"
                   id="imagenAdmin"
                   style={{
                     maxWidth: '100%',
                     maxHeight: '300px', // Ajusta la altura máxima de la imagen según tus necesidades
                   }} /><h1></h1><input
-                    type="file"
-                    id="cargarImagen"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={handleImagenChange}
-                  /><label htmlFor="cargarImagen">Cargar imagen</label></>
+                  type="file"
+                  id="cargarImagen"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleImagenChange}
+                /><label htmlFor="cargarImagen">Cargar imagen</label></>
               )}
-              {!imagenURL && (
+              {!direccion_imagen_url && (
                 <>
                   <input
                     type="file"
@@ -258,7 +260,7 @@ const Principal = () => {
                         required
                         value={nombre}
                         onChange={(e) => {
-                          setState1({ nombre: e.target.value, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: e.target.value, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux , direccion_imagen_url:direccion_imagen_url});
                           setNombre(e.target.value);
                         }}
                       />
@@ -273,7 +275,7 @@ const Principal = () => {
                         required
                         value={tipoDOC}
                         onChange={(e) => {
-                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: e.target.value, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: e.target.value, nroDocumento: nroDocumento, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
                           setTipoDOC(e.target.value);
                         }}
                       />
@@ -288,7 +290,7 @@ const Principal = () => {
                         required
                         value={apellidos}
                         onChange={(e) => {
-                          setState1({ nombre: nombre, apellidos: e.target.value, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: e.target.value, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                           setApellidos(e.target.value);
                         }}
                       />
@@ -304,7 +306,7 @@ const Principal = () => {
                         value={nroDocumento}
                         onChange={(e) => {
                           setNroDocumento(e.target.value);
-                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: e.target.value, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: e.target.value, correoaux: correoaux, direccion_imagen_url:direccion_imagen_url });
                         }}
                       />
                     </div>
@@ -325,7 +327,7 @@ const Principal = () => {
                         required
                         value={correo}
                         onChange={(e) => {
-                          setState2({ correo: e.target.value, password: password, correoaux: correoaux });
+                          setState2({ correo: e.target.value, password: password, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
                           setCorreo(e.target.value)
                         }}
                       />
@@ -340,7 +342,7 @@ const Principal = () => {
                         required
                         value={password}
                         onChange={(e) => {
-                          setState2({ correo: correo, password: e.target.value, correoaux: correoaux });
+                          setState2({ correo: correo, password: e.target.value, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
                           setPassword(e.target.value)
                         }}
                       />

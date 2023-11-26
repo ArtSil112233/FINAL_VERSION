@@ -6,7 +6,6 @@
 - Marcelo Cabrejos Benites
 - Roberto Carlos Lopez Jauregui
 - Alessandro Ledesma
-- Natalia Perez
 
 # Querys para el backend
 -   npx sequelize model:create --name libro --attributes formato:string,autor:string,editorial:string,categoria:string,anio:string,idioma:string,nro_paginas:string,encuadernacion:string,isbn:string,isbn13:string,nro_edicion:string,imagen_portada_url:text,titulo:string,dimensiones:string,url_compra:text,tema:string,coleccion:string,peso:string,ilustracion:string,diponibilidad_libro:integer

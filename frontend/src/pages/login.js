@@ -72,8 +72,8 @@ const Logear = () => {
             </div>
 
             <div className="button-container">
-              <Link href="/register"><button className="login-button">Registrar usuario</button></Link>
               <button className="register-button" type="submit">Ingresar</button> {/* Cambiamos el botón a type="submit" para que active onSubmit */}
+              <Link href="/register"><button className="login-button">Registrar usuario</button></Link>
             </div>
           </form>
         </div>

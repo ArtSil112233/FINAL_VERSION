@@ -20,6 +20,7 @@ const Principal = () => {
   const [idioma, setIdioma] = useState('');
   const [prefijo, setPrefijo] = useState('');
   const [color, setColor] = useState('');
+  const [direccion_imagen_url, setImagenURL] = useState(null);
 
   useEffect(() => {
     const recopilarRouterValue = () => {
@@ -74,7 +75,6 @@ const Principal = () => {
 
   //--------------------------------------------------------------------------------------------------------------------------------------------
   //LOGICA PARA CARGAR IMAGEN
-  const [imagenURL, setImagenURL] = useState(null);
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
@@ -92,7 +92,7 @@ const Principal = () => {
 
   //-----------------------DATOS PERSONALES---------------------------------------
   const [state1, setState1] = useState(
-    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' }
+    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' , direccion_imagen_url: null}
   )
   const handleGuardarClick2 = () => {
     actualizarJSONcasoDATOSPERSONALES(state1);
@@ -120,7 +120,7 @@ const Principal = () => {
   }
   //-----------------------CUENTA---------------------------------------
   const [state2, setState2] = useState(
-    { correo: '', password: '', correoaux: '' }
+    { correo: '', password: '', correoaux: '' , direccion_imagen_url: null}
   )
   async function handleGuardarClick() {
     await actualizarJSONcasoCUENTA(state2);
@@ -147,7 +147,7 @@ const Principal = () => {
   }
   //-----------------------PREFERENCIAS---------------------------------------
   const [state3, setState3] = useState(
-    { idioma: '', prefijo: '', color: '', correoaux: '' }
+    { idioma: '', prefijo: '', color: '', correoaux: '' , direccion_imagen_url: null}
   )
   const handleGuardarClick3 = () => {
     actualizarJSONcasoPREFERENCIAS(state3);
@@ -228,9 +228,9 @@ const Principal = () => {
           <div className="linea"></div>
           <div className="seccion-perfil">
             <div className="imagen-admin">
-              {imagenURL && (
+              {direccion_imagen_url && (
                 <><img
-                  src={imagenURL}
+                  src={direccion_imagen_url}
                   alt="Imagen del administrador"
                   id="imagenAdmin"
                   style={{
@@ -243,7 +243,7 @@ const Principal = () => {
                     style={{ display: 'none' }}
                     onChange={handleImagenChange} /><label htmlFor="cargarImagen">Cargar imagen</label></>
               )}
-              {!imagenURL && (
+              {!direccion_imagen_url && (
                 <>
                   <input
                     type="file"

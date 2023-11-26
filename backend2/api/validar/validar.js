@@ -21,7 +21,8 @@ ruta.post('/users', async (req, res) => {
             idioma: user.idioma,
             prefijo: user.prefijo,
             color: user.color,
-            tipo_usuario : user.tipo_usuario    
+            tipo_usuario : user.tipo_usuario,
+            direccion_imagen_url: user.direccion_imagen_url
         });
       } else {
         res.status(401).json({ success: false});

@@ -66,7 +66,7 @@ module.exports = {
       ilustracion: {
         type: Sequelize.STRING
       },
-      diponibilidad_libro: {
+      disponibilidad_libro: {
         type: Sequelize.INTEGER
       },
       createdAt: {

@@ -27,12 +27,6 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
-      repetir_password: {
-        type: Sequelize.STRING
-      },
-      imagen_url: {
-        type: Sequelize.TEXT
-      },
       idioma: {
         type: Sequelize.STRING
       },
@@ -44,6 +38,9 @@ module.exports = {
       },
       tipo_usuario: {
         type: Sequelize.STRING
+      },
+      direccion_imagen_url: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
