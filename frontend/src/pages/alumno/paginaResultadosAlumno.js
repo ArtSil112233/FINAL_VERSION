@@ -1,13 +1,21 @@
 import Link from 'next/link';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useState ,useEffect} from 'react';
 import LayoutCasoBusquedaAlumno from '@/components/LayoutCasoBusquedaAlumno';
 import { useRouter } from 'next/router';
 
 
 const Principal = () => {
   const router = useRouter();
-  const { usuario } = router.query;
+  const [usuario, setUsuario] = useState('');
+  useEffect(() => {
+    const recopilarRouterValue = () => {
+      const usuarioLocalStorage = localStorage.getItem("usuario");
+      const { usuario } = usuarioLocalStorage ? JSON.parse(usuarioLocalStorage) : { usuario: "" };
+      setUsuario(usuario);
+    };
+    recopilarRouterValue();
+  }, [])
 
   // Estado local para el valor de la casilla de búsqueda y checkboxes
   const [busqueda, setBusqueda] = useState('');
@@ -38,8 +46,10 @@ const Principal = () => {
     };
 
     // Generar la URL con los parámetros y redireccionar
+    const userData = { usuario };
+    localStorage.setItem("usuario", JSON.stringify(userData));
     router.push({
-      pathname: `/blog/alumno/${usuario}/paginaBusquedaLibroAlumno`, // Reemplaza con la ruta correcta
+      pathname: `/alumno/paginaBusquedaLibroAlumno`, // Reemplaza con la ruta correcta
       query: queryParams,
     });
   };
@@ -50,11 +60,17 @@ const Principal = () => {
     setMostrarValidacion(true);
   }
   function confirmacionSalida() {
-    window.location.href = "/login";
+    router.push("/login");
   }
   function nosalir() {
     setMostrarValidacion(false);
   }
+  //LOGICA RUTAS
+  const redirigirConUsuario = (ruta) => {
+    const userData = { usuario };
+    localStorage.setItem("usuario", JSON.stringify(userData));
+    router.push(ruta);
+  };
   return (
     <>
       <LayoutCasoBusquedaAlumno content={
@@ -62,23 +78,10 @@ const Principal = () => {
           <div className="contenidoizquierda">
             <div className="opciones">
               <ul>
-                <li><Link href={`/blog/alumno/${usuario}/paginaPrincipalAlumno`}>Principal</Link></li>
-                <li><Link href={`/blog/alumno/${usuario}/paginaPerfilAlumno`}>Perfil</Link></li>
-                <li><Link href={`/blog/alumno/${usuario}/paginaResultadosAlumno`}>Préstamos</Link></li>
-                <button
-                  onClick={ValidacionDeSalida}
-                  style={{
-                    cursor: 'pointer',
-                    border: 'none',
-                    background: 'none',
-                    color: 'rgb(93, 1, 93)',
-                    textDecoration: 'none',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    marginTop: '13px',
-                    marginLeft: '-70px',
-                  }}
-                >Salir</button>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPrincipalAlumno`)}>Inicio</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPerfilAlumno`)}>Perfil</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaResultadosAlumno`)}>Bibliotecas</button></li>
+                <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                 {MostrarValidacion && (
                   <>
                     <div className="confirmacion-fondo">

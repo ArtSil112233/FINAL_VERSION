@@ -6,37 +6,38 @@ import { useState, useEffect } from 'react';
 
 const Principal = () => {
   const router = useRouter();
-  const { usuario } = router.query;
+  const [usuario, setUsuario] = useState('');
   const [primernombre, setPrimernombre] = useState('');
   const [id_usuario, setId_usuario] = useState();
 
   useEffect(() => {
-    if(usuario){
-      const recopilarNombreUsuario = async () => {
-        try {
-          const response = await fetch('/api/validar/users', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ usuario }),
-          });
-          const data = await response.json();
-          const { nombreDelAlumno, id_usuario } = data;
-          if (nombreDelAlumno) {
-            const nombreAlumnoArray = nombreDelAlumno.split(' ');
-            setPrimernombre(nombreAlumnoArray[0]);
-            setId_usuario(id_usuario);
-          }
-        } catch (error) {
-          console.error('Error de conexión');
+    const recopilarNombreUsuario = async () => {
+      const usuarioLocalStorage = localStorage.getItem("usuario");
+      const { usuario } = usuarioLocalStorage ? JSON.parse(usuarioLocalStorage) : { usuario: "" };
+      setUsuario(usuario);
+      try {
+        const response = await fetch('/api/validar/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ usuario }),
+        });
+        const data = await response.json();
+        console.log("DATOS DE API VALIDAR USUARIO: ", data);
+        const { nombreDelAlumno, id_usuario } = data;
+        if (nombreDelAlumno) {
+          const nombreAlumnoArray = nombreDelAlumno.split(' ');
+          setPrimernombre(nombreAlumnoArray[0]);
+          setId_usuario(id_usuario);
         }
-      };
-  
-      recopilarNombreUsuario();
-    }
-    
-  }, [usuario]);
+      } catch (error) {
+        console.error('Error de conexión');
+      }
+    };
+
+    recopilarNombreUsuario();
+  }, []);
 
   //------- ULTIMOS RESERVADOS --------------------
   const [reservas, setReservas] = useState([]);
@@ -53,7 +54,7 @@ const Principal = () => {
       const data = await response.json();
       if (response.ok) {
         const { reservas } = data;
-        setReservas(reservas.slice(0,2));
+        setReservas(reservas.slice(0, 2));
       } else {
         alert(data.message || 'Error al encontrar reservas');
       }
@@ -64,7 +65,7 @@ const Principal = () => {
   };
 
   useEffect(() => {
-    if (id_usuario) {
+    if (id_usuario || id_usuario == 0) {
       obtenerReservas();
     }
   }, [id_usuario]);
@@ -79,12 +80,18 @@ const Principal = () => {
     setMostrarValidacion(true);
   }
   function confirmacionSalida() {
-    window.location.href = "/login";
+    router.push("/login");
   }
   function nosalir() {
     setMostrarValidacion(false);
   }
 
+  //LOGICA RUTAS
+  const redirigirConUsuario = (ruta) => {
+    const userData = { usuario };
+    localStorage.setItem("usuario", JSON.stringify(userData));
+    router.push(ruta);
+  };
   return (
     <>
       <Layout content={
@@ -92,24 +99,10 @@ const Principal = () => {
           <div className="contenidoizquierda">
             <div className="opciones">
               <ul>
-                <li><Link href={`/blog/alumno/${usuario}/paginaPrincipalAlumno`}>Principal</Link></li>
-                <li><Link href={`/blog/alumno/${usuario}/paginaPerfilAlumno`}>Perfil</Link></li>
-                <li><Link href={`/blog/alumno/${usuario}/paginaResultadosAlumno`}>Préstamos</Link></li>
-                <button
-                  onClick={ValidacionDeSalida}
-                  style={{
-                    cursor: 'pointer',
-                    border: 'none',
-                    background: 'none',
-                    color: 'rgb(93, 1, 93)',
-                    textDecoration: 'none',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    marginTop: '13px',
-                    display: 'inline-block',  
-                    marginLeft: '-70px',
-                  }}
-                >Salir</button>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPrincipalAlumno`)}>Inicio</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPerfilAlumno`)}>Perfil</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaResultadosAlumno`)}>Bibliotecas</button></li>
+                <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                 {MostrarValidacion && (
                   <>
                     <div className="confirmacion-fondo">
@@ -145,15 +138,15 @@ const Principal = () => {
                 </div>
               ))}
             </div>
-            <Link href={`/blog/alumno/${usuario}/paginaUltimasReservas`} className="ver-todo">Ver todo</Link>
+            <button onClick={() => redirigirConUsuario(`/paginaUltimasReservas`)}>Ver todo</button>
           </div>
 
           <div className="seccion-igual-2">
             <div className="titulo_seccion">Proximos a vencer</div>
             <div className="cartas_fila">
-              {reservas.sort(function(a, b) {
-                    return new Date(a.fechaentrega) - new Date(b.fechaentrega);
-                }).slice(0,2).map((reserva, index) => (
+              {reservas.sort(function (a, b) {
+                return new Date(a.fechaentrega) - new Date(b.fechaentrega);
+              }).slice(0, 2).map((reserva, index) => (
                 <div className="carta" key={index}>
                   <div className="contenido">
                     <div className='Titulo_card'>

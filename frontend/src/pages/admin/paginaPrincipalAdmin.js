@@ -6,36 +6,35 @@ import { useState, useEffect } from 'react';
 
 const Principal = () => {
   const router = useRouter();
-  const { usuario } = router.query;
   const [primernombre, setPrimernombre] = useState('');
+  const [usuario, setUsuario] = useState('');
   const [stats, setStats] = useState([]);
   useEffect(() => {
-    if (usuario) {
-      const recopilarNombreUsuario = async () => {
-        try {
-          const response = await fetch('/api/validar/users', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ usuario }),
-          });
-          const data = await response.json();
-          const { nombreDelAlumno } = data;
-          if (nombreDelAlumno) {
-            const nombreAlumnoArray = nombreDelAlumno.split(' ');
-            setPrimernombre(nombreAlumnoArray[0]);
-          }
-        } catch (error) {
-          console.error('Error de conexión');
+    const recopilarNombreUsuario = async () => {
+      try {
+        const usuarioLocalStorage = localStorage.getItem("usuario");
+        const { usuario } = usuarioLocalStorage ? JSON.parse(usuarioLocalStorage) : { usuario: "" };
+        setUsuario(usuario);
+        const response = await fetch('/api/validar/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ usuario }),
+        });
+        const data = await response.json();
+        const { nombreDelAlumno } = data;
+        if (nombreDelAlumno) {
+          const nombreAlumnoArray = nombreDelAlumno.split(' ');
+          setPrimernombre(nombreAlumnoArray[0]);
         }
-      };
+      } catch (error) {
+        console.error('Error de conexión');
+      }
+    };
 
-      recopilarNombreUsuario();
-
-    }
-
-  }, [usuario]);
+    recopilarNombreUsuario();
+  }, []);
 
   //------- ULTIMOS RESERVADOS --------------------
   const [reservas, setReservas] = useState([]);
@@ -52,7 +51,7 @@ const Principal = () => {
       const data = await response.json();
       if (response.ok) {
         const { reservas } = data;
-        setReservas(reservas);
+        setReservas(reservas.filter((reserva) => reserva.disponibilidad == 1));
       } else {
         setReservas([]);
       }
@@ -96,11 +95,18 @@ const Principal = () => {
     setMostrarValidacion(true);
   }
   function confirmacionSalida() {
-    window.location.href = "/login";
+    router.push("/login");
   }
   function nosalir() {
     setMostrarValidacion(false);
   }
+
+  //LOGICA RUTAS
+  const redirigirConUsuario = (ruta) => {
+    const userData = { usuario };
+    localStorage.setItem("usuario", JSON.stringify(userData));
+    router.push(ruta);
+  };
   return (
     <>
       <Layout content={
@@ -108,23 +114,10 @@ const Principal = () => {
           <div className="contenidoizquierda">
             <div className="opciones">
               <ul>
-                <li><Link href={`/blog/admin/${usuario}/paginaPrincipalAdmin`}>Inicio</Link></li>
-                <li><Link href={`/blog/admin/${usuario}/paginaPerfilAdmin`}>Perfil</Link></li>
-                <li><Link href={`/blog/admin/${usuario}/paginaResultadosAdmin`}>Bibliotecas</Link></li>
-                <button
-                  onClick={ValidacionDeSalida}
-                  style={{
-                    cursor: 'pointer',
-                    border: 'none',
-                    background: 'none',
-                    color: 'rgb(93, 1, 93)',
-                    textDecoration: 'none',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    marginTop: '13px',
-                    marginLeft: '-70px',
-                  }}
-                >Salir</button>
+                <li><button onClick={() => redirigirConUsuario(`/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/admin/paginaPerfilAdmin`)}>Perfil</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
+                <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                 {MostrarValidacion && (
                   <>
                     <div className="confirmacion-fondo">
@@ -145,14 +138,14 @@ const Principal = () => {
           </div>
           <div className="linea"></div>
           <div className="seccion-igual-1">
-            <div class="titulo_seccion">Últimas reservas</div>
-            <div class="cartas_fila">
-              {reservas.slice(0,2).map((reserva, index) => ( //RESERVAS TEST
+            <div className="titulo_seccion">Últimas reservas</div>
+            <div className="cartas_fila">
+              {reservas.slice(0, 2).map((reserva, index) => ( //RESERVAS TEST
                 <div className="carta" key={index}>
                   <div className="contenido">
                     <div className='Titulo_card'>
                       <h2>{reserva.reservalibro.titulo}</h2></div>
-                    <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}<span class="User_Card"> User: {reserva.usuariolibro.correo.split("@")[0]}</span></p>
+                    <p className='Fecha_card'>{new Date(reserva.fecha).toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" })}<span className="User_Card"> User: {reserva.usuariolibro.correo.split("@")[0]}</span></p>
                   </div>
                   <div className="imagen">
                     <img src={reserva.reservalibro.imagen_portada_url} loading="lazzy" alt="/media.png" className="icono_default" />
@@ -160,12 +153,12 @@ const Principal = () => {
                 </div>
               ))}
             </div>
-            <Link href={`/blog/admin/${usuario}/paginaUltimasReservas`} class="ver-todo">Ver todo</Link>
+            <button className= "ver_todo" onClick={() => redirigirConUsuario(`/paginaUltimasReservas`)}>Ver todo</button>
           </div>
 
           <div className="seccion-igual-2">
-            <div class="titulo_seccion">Los más pedidos</div>
-            <div class="cartas_fila">
+            <div className="titulo_seccion">Los más pedidos</div>
+            <div className="cartas_fila">
               {stats.map((libro, index) => (
                 <div className="carta" key={index}>
                   <div className="contenido">

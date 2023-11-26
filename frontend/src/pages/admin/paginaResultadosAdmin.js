@@ -7,18 +7,26 @@ import { useState, useEffect } from 'react';
 
 const Principal = () => {
     const router = useRouter();
-    const { usuario } = router.query;
-
+    const [usuario, setUsuario] = useState('');
     const [inputText, setInputText] = useState('');
     const [coincidencias, setCoincidencias] = useState([]);
     const [paginaActual, setPaginaActual] = useState(1);
     const resultadosPorPagina = 3;
-
+    useEffect(() => {
+        const recopilarRouterValue = () => {
+            const usuarioLocalStorage = localStorage.getItem("usuario");
+            const { usuario } = usuarioLocalStorage ? JSON.parse(usuarioLocalStorage) : { usuario: "" };
+            setUsuario(usuario);
+        };
+        recopilarRouterValue();
+    }, [])
+    const [flag, setFlag] = useState(false);
     useEffect(() => {
         if (inputText === '') {
             setCoincidencias([]);
+            setReservas([]);
         } else {
-            const recopilarNombreUsuario = async () => {
+            const filtrarlibros = async () => {
                 try {
                     const response = await fetch('/api/filtrar/filtrarLibros', {
                         method: 'POST',
@@ -35,9 +43,35 @@ const Principal = () => {
                     console.error('Error de conexión');
                 }
             };
-            recopilarNombreUsuario();
+            filtrarlibros();
         }
     }, [inputText]);
+    useEffect(() => {
+        async function obtenerReservas() {
+            try {
+                const response = await fetch('/api/filtrar/reservas_libros_usuario', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify()
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    const { reservas } = data;
+                    setReservas(reservas);
+                } else {
+                    setReservas([]);
+                }
+            } catch (error) {
+                console.error('Error al realizar la solicitud:', error);
+                alert('Error al realizar la solicitud');
+            }
+
+        };
+        obtenerReservas();
+    }, [inputText, flag]); // OSEA CUADNO CUANDO CAMBIE EN INPUT O EL FLAG
 
     const irAPaginaSiguiente = () => {
         if ((paginaActual) * resultadosPorPagina <= coincidencias.length) {
@@ -54,53 +88,81 @@ const Principal = () => {
             setPaginaActual(paginaActual - 1);
         }
     };
-
-    // Calcula los índices de inicio y fin para mostrar los resultados de la página actual
-    const indiceInicio = (paginaActual - 1) * resultadosPorPagina;
-    const indiceFin = indiceInicio + resultadosPorPagina;
-
-    const [reservas, setReservas] = useState([]);
-
-    async function obtenerReservas() {
+    const eliminarReserva = async () => {
+        setFlag(true);
+    };
+    function noeliminar() {
+        setFlag(false);
+    }
+    async function eliminar(id_libro) {
         try {
-            const response = await fetch('/api/filtrar/filtrarReservas', {
+            console.log(id_libro);
+            const response = await fetch('/api/eliminar/reserva', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ inputText }),
+                body: JSON.stringify({ id_libro }),
             });
             const data = await response.json();
-            const { reservas } = data;
-            if (response.ok) {
-                const { reservas } = data;
-                setReservas(reservas);
-                console.log("Reservas general: ", reservas);
+            if (data.success) {
+                setFlag(false);
             } else {
-                setReservas([]);
+                alert(data.message);
             }
         } catch (error) {
             console.error('Error de conexión');
         }
     }
 
-    useEffect(() => {
-        obtenerReservas();
-    }, []);
-    // Función para manejar la búsqueda y redireccionar
+    // Calcula los índices de inicio y fin para mostrar los resultados de la página actual
+    const indiceInicio = (paginaActual - 1) * resultadosPorPagina;
+    const indiceFin = indiceInicio + resultadosPorPagina;
+
+    const [reservas, setReservas] = useState([]);
+    /*
+        async function obtenerReservas() {
+            try {
+                const response = await fetch('/api/filtrar/filtrarReservas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ inputText }),
+                });
+                const data = await response.json();
+                const { reservas } = data;
+                if (response.ok) {
+                    const { reservas } = data;
+                    setReservas(reservas);
+                    console.log("Reservas general: ", reservas);
+                } else {
+                    setReservas([]);
+                }
+            } catch (error) {
+                console.error('Error de conexión');
+            }
+        }
+    
+        useEffect(() => {
+            obtenerReservas();
+        }, []);
+    */
     function buscar(id_libro) {
-        // Construir la URL con los parámetros
         const queryParams = {
             id_libro
         };
-        // Generar la URL con los parámetros y redireccionar
+        const userData = { usuario };
+        localStorage.setItem("usuario", JSON.stringify(userData));
         router.push({
-            pathname: `/blog/alumno/${usuario}/paginaEditarLibroAdmin`, // Reemplaza con la ruta correcta
+            pathname: `/admin/paginaEditarLibroAdmin`, // Reemplaza con la ruta correcta
             query: queryParams,
         });
     };
     const doEscribir = async () => {
-        window.location.href = `/blog/admin/${usuario}/paginaInsertarNuevoLibroAdmin`;
+        const userData = { usuario };
+        localStorage.setItem("usuario", JSON.stringify(userData));
+        router.push(`/admin/paginaInsertarNuevoLibroAdmin`);
     };
     //LOGICA PARA IR AL INICIO
     const [MostrarValidacion, setMostrarValidacion] = useState(false);
@@ -108,11 +170,17 @@ const Principal = () => {
         setMostrarValidacion(true);
     }
     function confirmacionSalida() {
-        window.location.href = "/login";
+        router.push("/login");
     }
     function nosalir() {
         setMostrarValidacion(false);
     }
+    //LOGICA RUTAS
+    const redirigirConUsuario = (ruta) => {
+        const userData = { usuario };
+        localStorage.setItem("usuario", JSON.stringify(userData));
+        router.push(ruta);
+    };
     return (
         <>
             <Layout1 content={
@@ -120,23 +188,10 @@ const Principal = () => {
                     <div className="contenidoizquierda">
                         <div className="opciones">
                             <ul>
-                                <li><Link href={`/blog/admin/${usuario}/paginaPrincipalAdmin`}>Inicio</Link></li>
-                                <li><Link href={`/blog/admin/${usuario}/paginaPerfilAdmin`}>Perfil</Link></li>
-                                <li><Link href={`/blog/admin/${usuario}/paginaResultadosAdmin`}>Bibliotecas</Link></li>
-                                <button
-                                    onClick={ValidacionDeSalida}
-                                    style={{
-                                        cursor: 'pointer',
-                                        border: 'none',
-                                        background: 'none',
-                                        color: 'rgb(93, 1, 93)',
-                                        textDecoration: 'none',
-                                        fontSize: '20px',
-                                        fontWeight: 'bold',
-                                        marginTop: '13px',
-                                        marginLeft: '-70px',
-                                    }}
-                                >Salir</button>
+                                <li><button onClick={() => redirigirConUsuario(`/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
+                                <li><button onClick={() => redirigirConUsuario(`/admin/paginaPerfilAdmin`)}>Perfil</button></li>
+                                <li><button onClick={() => redirigirConUsuario(`/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
+                                <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                                 {MostrarValidacion && (
                                     <>
                                         <div className="confirmacion-fondo">
@@ -152,7 +207,7 @@ const Principal = () => {
                         </div>
                         <p className="version">Biblio v1.0.1-Alpha</p>
                     </div>
-                    <div className="seccion-titulo-resultados">
+                    <div className="seccion-titulo-resultados23">
                         <div className="titulo">
                             <h2>Biblioteca</h2>
                         </div>
@@ -175,6 +230,16 @@ const Principal = () => {
                             onChange={(e) => setInputText(e.target.value)}
                             placeholder="Buscar por título"
                         />
+                        <div className="paginacion">
+                            <h4>Página {paginaActual} de {(Math.ceil((coincidencias.length) / resultadosPorPagina))}</h4>
+                            <button onClick={irAPaginaAnterior} disabled={paginaActual === 1}>
+                                {'<'}
+                            </button>
+                            <h4>{paginaActual}... {(Math.ceil((coincidencias.length) / resultadosPorPagina))}</h4>
+                            <button onClick={irAPaginaSiguiente} disabled={paginaActual === (Math.ceil((coincidencias.length) / resultadosPorPagina))}>
+                                {'>'}
+                            </button>
+                        </div>
                     </div>
                     <div className="seccion-rectangular-gris">
                         {coincidencias.slice(indiceInicio, indiceFin).map((libro, index) => {
@@ -220,24 +285,36 @@ const Principal = () => {
                                     </div>
                                     {isBotonDeshabilitado && (
                                         <>
-                                            <div className="MensajeNoDisp">El libro está reservado</div>
+                                            <div className="MensajeNoDisp">Libro reservado por: <b>{(reservas.find((reserva) => reserva.id_libro === libro.id)).usuariolibro.correo}</b></div>
+                                            <div className="button-container-3" >
+                                                <button onClick={() => buscar(libro.id)}>EDITAR</button>
+                                                <button onClick={eliminarReserva}>ELIMINAR</button>
+                                            </div>
                                         </>
                                     )}
-                                    <button onClick={() => buscar(libro.id)}>EDITAR</button>
+                                    {!isBotonDeshabilitado && (
+                                        <>
+                                            <button onClick={() => buscar(libro.id)} style={{ marginTop: '19px' }}>EDITAR</button>
+                                        </>
+                                    )}
+                                    {isBotonDeshabilitado && flag && (
+                                        <div className="confirmacion-fondo">
+                                            <div className="confirmacion">
+                                                <h2>¿Seguro que deseas eliminar esta reserva?</h2>
+                                                <div className="button-container-4" >
+                                                    {console.log("ID DEL LIBRO")}
+                                                    {console.log(libro)}
+                                                    <button onClick={() => eliminar(libro.id)}>SÍ</button>
+                                                    <button onClick={noeliminar}>NO</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    )}
                                 </div>
                             );
                         })}
                     </div>
-
-                    <div className="paginacion">
-                        <button onClick={irAPaginaAnterior} disabled={paginaActual === 1}>
-                            {'<'}
-                        </button>
-                        <button onClick={irAPaginaSiguiente} disabled={paginaActual === (Math.ceil((coincidencias.length) / resultadosPorPagina))}>
-                            {'>'}
-                        </button>
-                    </div>
-
                 </>
             } />
         </>

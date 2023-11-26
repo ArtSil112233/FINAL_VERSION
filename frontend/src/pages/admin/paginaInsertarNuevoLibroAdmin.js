@@ -7,16 +7,25 @@ import { useRouter } from 'next/router';
 
 const AgregarNuevo = () => {
     const router = useRouter();
-    const { usuario } = router.query;
-    const { id_libro } = router.query;
+    const [usuario, setUsuario] = useState('');
     const [primernombre, setPrimernombre] = useState('');
+    const [nombre, setNombre] = useState('');
+    const [tipoDOC, setTipoDOC] = useState('');
+    const [apellidos, setApellidos] = useState('');
+    const [nroDocumento, setNroDocumento] = useState('');
+    const [correo, setCorreo] = useState('');
+    const [correoaux, setCorreoaux] = useState('');
+    const [password, setPassword] = useState('');
+    const [idioma, setIdioma] = useState('');
+    const [prefijo, setPrefijo] = useState('');
+    const [color, setColor] = useState('');
 
-    const [state, setState] = useState(
-        { titulo: '', autor: '', isbn13: '', tema: '', isbn13aux: '' }
-    )
     useEffect(() => {
         const recopilarNombreUsuario = async () => {
             try {
+                const usuarioLocalStorage = localStorage.getItem("usuario");
+                const { usuario } = usuarioLocalStorage ? JSON.parse(usuarioLocalStorage) : { usuario: "" };
+                setUsuario(usuario);
                 const response = await fetch('/api/validar/users', {
                     method: 'POST',
                     headers: {
@@ -35,68 +44,71 @@ const AgregarNuevo = () => {
                 console.error('Error de conexión');
             }
         };
-        const recopilarInfoLibro = async () => {
-            try {
-                const response = await fetch('/api/editarlibro/recoger', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ id_libro }),
-                });
 
-                const data = await response.json();
-                const { titulo } = data;
-                const { autor } = data;
-                const { isbn13 } = data;
-                const { tema } = data;
-                setState({ titulo: titulo, autor: autor, isbn13: isbn13, tema: tema, isbn13aux: isbn13 });
-            } catch (error) {
-                console.error('Error de conexión');
-            }
-        };
-        recopilarInfoLibro();
         recopilarNombreUsuario();
-    }, [usuario, id_libro]);
-    //------------------------------------------------------------------------------
+    }, []);
 
-    /*
-    async function handleGuardarClick() {
-        //HACE QUE LA PAGINA NO SE VUEVLA A ACTUALIZAR
-        event.preventDefault();
-        await actualizarLibro(state);
-    };
-¨*/
-    const [flag, setFlag] = useState(false);
-    const handleGuardarClick = async (event) => {
-        //HACE QUE LA PAGINA NO SE VUEVLA A ACTUALIZAR
-        event.preventDefault();
-        await actualizarLibro(state);
-    };
-    async function actualizarLibro(nuevosDatos) {
+    //------------------------ GUARDADO DE LIBRO --------------------------
+    const [libroNuevo, setLibroNuevo] = useState(
+        { titulo: '', autor: '', isbn13: '', tema: '' }
+    )
+
+
+    function mngmtChange(e) {
+        console.log(e.target.name, e.target.value)
+        setLibroNuevo({ ...libroNuevo, [e.target.name]: e.target.value })
+    }
+
+    async function mngmtSubmit(e) {
+        e.preventDefault();
+        let formData = new FormData();
+        for (let [key, value] of Object.entries(libroNuevo)) {
+            formData.append(key, value)
+        }
+        //Una vez que se ha cargado el formData, se envia el formulario normalmente usando fetch (backend)...
+        console.log(formData)
         try {
-            const response = await fetch('/api/editarlibro/editar', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(nuevosDatos),
-            });
-            const data = await response.json();
-            if (data.success) {
-                setFlag(true);
-            } else {
-                alert(data.message);
-            }
+            await escribir();
         } catch (error) {
-            console.error('Error de conexión');
+            console.error("Error al registrar el usuario:", error);
+            alert("El correo electronico ya existe. Por favor, inténte con otro.");
         }
     }
-    //-----------------------------------------------------------------------------------------
-    const completo = () => {
-        setFlag(true);
-        router.push(`/blog/admin/${usuario}/paginaResultadosAdmin`);
+
+    const [flag, setFlag] = useState(false)
+
+    async function escribir() {
+        console.log(isbn13);
+        const response = await fetch('/api/register/registrarLibro', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(libroNuevo),
+        });
+        const data2 = await response.json();
+        console.log(data2.success);
+        if (data2.success) {
+            setFlag(true);
+        } else {
+            alert("Ya existe un libro con el mismo ISBN. Por favor, inténte con otro.");
+        }
     }
+
+    const completo = () => {
+        setFlag(false);
+        // Restablecer los valores del libroNuevo
+        setLibroNuevo({
+            titulo: "",
+            autor: "",
+            isbn13: "",
+            tema: "",
+        });
+        const userData = { usuario };
+        localStorage.setItem("usuario", JSON.stringify(userData));
+        router.push(`/admin/paginaResultadosAdmin`);
+    };
+
     //LOGICA PARA IR AL INICIO
     const [MostrarValidacion, setMostrarValidacion] = useState(false);
     function ValidacionDeSalida() {
@@ -109,29 +121,22 @@ const AgregarNuevo = () => {
         setMostrarValidacion(false);
     }
 
+    //LOGICA RUTAS
+    const redirigirConUsuario = (ruta) => {
+        const userData = { usuario };
+        localStorage.setItem("usuario", JSON.stringify(userData));
+        router.push(ruta);
+    };
     return (
         <Layout content={
             <>
                 <div className="contenidoizquierda">
                     <div className="opciones">
                         <ul>
-                            <li><Link href={`/blog/admin/${usuario}/paginaPrincipalAdmin`}>Inicio</Link></li>
-                            <li><Link href={`/blog/admin/${usuario}/paginaPerfilAdmin`}>Perfil</Link></li>
-                            <li><Link href={`/blog/admin/${usuario}/paginaResultadosAdmin`}>Bibliotecas</Link></li>
-                            <button
-                                onClick={ValidacionDeSalida}
-                                style={{
-                                    cursor: 'pointer',
-                                    border: 'none',
-                                    background: 'none',
-                                    color: 'rgb(93, 1, 93)',
-                                    textDecoration: 'none',
-                                    fontSize: '20px',
-                                    fontWeight: 'bold',
-                                    marginTop: '13px',
-                                    marginLeft: '-70px',
-                                }}
-                            >Salir</button>
+                            <li><button onClick={() => redirigirConUsuario(`/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
+                            <li><button onClick={() => redirigirConUsuario(`/admin/paginaPerfilAdmin`)}>Perfil</button></li>
+                            <li><button onClick={() => redirigirConUsuario(`/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
+                            <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                             {MostrarValidacion && (
                                 <>
                                     <div className="confirmacion-fondo">
@@ -166,10 +171,10 @@ const AgregarNuevo = () => {
                     <div className="opciones2">
                         <div className="opciones-superior">
                             <div className='opciones-3'>
-                                EDITAR LIBRO
+                                INSERTAR NUEVO LIBRO
                             </div>
                         </div>
-                        <form className="opciones-contenido">
+                        <form className="opciones-contenido" onSubmit={mngmtSubmit}>
                             <div className="column-2">
                                 <div className="input-container-2">
                                     <label className="form-label-2" htmlFor="titulo">TÍTULO</label>
@@ -178,10 +183,8 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="titulo"
                                         name="titulo"
-                                        value={state.titulo}
-                                        onChange={(e) => {
-                                            setState({ titulo: e.target.value, autor: state.autor, isbn13: state.isbn13, tema: state.tema, isbn13aux: state.isbn13aux });
-                                        }}
+                                        onChange={mngmtChange}
+                                        value={libroNuevo.titulo}
                                         required
                                     />
                                 </div>
@@ -192,11 +195,8 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="autor"
                                         name="autor"
-                                        value={state.autor}
-                                        onChange={(e) => {
-                                            setState({ titulo: state.titulo, autor: e.target.value, isbn13: state.isbn13, tema: state.tema, isbn13aux: state.isbn13aux });
-
-                                        }}
+                                        onChange={mngmtChange}
+                                        value={libroNuevo.autor}
                                         required
                                     />
                                 </div>
@@ -207,11 +207,8 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="isbn13"
                                         name="isbn13"
-                                        value={state.isbn13}
-                                        onChange={(e) => {
-                                            setState({ titulo: state.titulo, autor: state.autor, isbn13: e.target.value, tema: state.tema, isbn13aux: state.isbn13aux });
-
-                                        }}
+                                        onChange={mngmtChange}
+                                        value={libroNuevo.isbn13}
                                         required
                                     />
                                 </div>
@@ -222,16 +219,13 @@ const AgregarNuevo = () => {
                                         type="text"
                                         id="tema"
                                         name="tema"
-                                        value={state.tema}
-                                        onChange={(e) => {
-                                            setState({ titulo: state.titulo, autor: state.autor, isbn13: state.isbn13, tema: e.target.value, isbn13aux: state.isbn13aux });
-
-                                        }}
+                                        onChange={mngmtChange}
+                                        value={libroNuevo.tema}
                                         required
                                     />
                                 </div>
                                 <div className="button-container-2" >
-                                    <button className="register-button-2" disabled={!(state.titulo && state.autor && state.isbn13 && state.tema)} onClick={handleGuardarClick}>Guardar</button>
+                                    <button className="register-button-2" disabled={!(libroNuevo.titulo && libroNuevo.autor && libroNuevo.isbn13 && libroNuevo.tema)} >Guardar</button>
                                 </div>
                             </div>
                         </form>
@@ -239,7 +233,7 @@ const AgregarNuevo = () => {
                             <div className="confirmacion-fondo">
                                 <div className="confirmacion">
                                     <h2>Registro completo</h2>
-                                    <h3>El recurso ha sido EDITADO con éxito</h3>
+                                    <h3>El recurso ha sido grabado con éxito</h3>
                                     <button onClick={completo}>OK</button>
                                 </div>
                             </div>

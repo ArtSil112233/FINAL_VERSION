@@ -9,7 +9,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 const PaginaDestino = () => {
     // Obtiene el objeto router
     const router = useRouter();
-    const { id_libro, usuario } = router.query;
+    const [usuario, setUsuario] = useState('');
+    const { id_libro } = router.query;
     const [id_usuario, setid_usuario] = useState(0);
     const [titulo, setTitulo] = useState("");
     const [imagen_portada_url, setImagen_portada_url] = useState("");
@@ -18,9 +19,16 @@ const PaginaDestino = () => {
 
     // Define un estado para el libro
     const [libro, setLibro] = useState(null);
-
     useEffect(() => {
-        const recopilarNombreUsuario = async () => {
+        const recopilarRouterValue = () => {
+            const usuarioLocalStorage = localStorage.getItem("usuario");
+            const { usuario } = usuarioLocalStorage ? JSON.parse(usuarioLocalStorage) : { usuario: "" };
+            setUsuario(usuario);
+        };
+        recopilarRouterValue();
+    }, [])
+    useEffect(() => {
+        const recopilarInfoLibro = async () => {
             try {
                 const response = await fetch('/api/filtrar/librosCita', {
                     method: 'POST',
@@ -42,33 +50,13 @@ const PaginaDestino = () => {
                 console.error('Error de conexión');
             }
         };
-        recopilarNombreUsuario();
+        recopilarInfoLibro();
 
     }, [id_libro]);
 
-    useEffect(() => {
-        const recopilarIdUsuario = async () => {
-            try {
-                const response = await fetch('/api/filtrar/idusuario', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ usuario }),
-                });
-                const data = await response.json();
-                const { id_usuario } = data;
-                setid_usuario(id_usuario);
-            } catch (error) {
-                console.error('Error de conexión');
-            }
-        };
-        recopilarIdUsuario();
-
-    }, [id_libro]);
-
+    
     const [showCalendar, setShowCalendar] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     const toggleCalendar = () => {
         setShowCalendar(!showCalendar);
@@ -81,35 +69,42 @@ const PaginaDestino = () => {
     const [showMessage, setShowMessage] = useState(false);
     const [fechaentrega, setFechaEntrega] = useState(null);
     const registrarReserva = async () => {
-        // Crea un objeto de reserva con la fecha, usuario y título del libro
         const fechaEntrega = new Date(selectedDate);
-        fechaEntrega.setDate(fechaEntrega.getDate() + 30);
-        setFechaEntrega(fechaEntrega.toDateString());
-        try {
-            const response = await fetch('/api/register/reservas', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    fecha: selectedDate.toISOString(),
-                    fechaentrega: fechaEntrega.toISOString(),
-                    disponibilidad: 1,
-                    id_libro: id_libro,
-                    id_usuario: id_usuario
-                }),
-            });
-        } catch (error) {
-            console.log(error);
-            console.error('Error de conexión');
+        const fechaactual = new Date();
+        const fechaLimite = new Date(fechaactual);
+        fechaLimite.setDate(fechaactual.getDate() + 30);
+        if (fechaEntrega <= fechaactual || fechaEntrega > fechaLimite) {
+            alert("POR FAVOR, selecciona una fecha mayor al actual y no más de 30 días");
+            setShowCalendar(true);
+        } else {
+            try {
+                setFechaEntrega(fechaEntrega.toDateString());
+                const response = await fetch('/api/register/reservas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fecha: fechaactual.toISOString(),
+                        fechaentrega: selectedDate.toISOString(),
+                        disponibilidad: 1,
+                        id_libro: id_libro,
+                        usuario: usuario
+                    }),
+                });
+            } catch (error) {
+                console.log(error);
+                console.error('Error de conexión');
+            }
+            setShowCalendar(false);
+            setShowMessage(true);
         }
-        setShowCalendar(false);
-        setShowMessage(true);
     };
 
 
     const handleOKButtonClick = () => {
         setShowMessage(false);
+        console.log(fechaentrega);
         router.back();
     };
 
@@ -124,11 +119,17 @@ const PaginaDestino = () => {
         setMostrarValidacion(true);
     }
     function confirmacionSalida() {
-        window.location.href = "/login";
+        router.push("/login");
     }
     function nosalir() {
         setMostrarValidacion(false);
     }
+    //LOGICA RUTAS
+    const redirigirConUsuario = (ruta) => {
+        const userData = { usuario };
+        localStorage.setItem("usuario", JSON.stringify(userData));
+        router.push(ruta);
+    };
     return (
         <LayoutcasoCita content={
             <>
@@ -136,23 +137,10 @@ const PaginaDestino = () => {
                 <div className="contenidoizquierda">
                     <div className="opciones">
                         <ul>
-                            <li><Link href={`/blog/alumno/${usuario}/paginaPrincipalAlumno`}>Principal</Link></li>
-                            <li><Link href={`/blog/alumno/${usuario}/paginaPerfilAlumno`}>Perfil</Link></li>
-                            <li><Link href={`/blog/alumno/${usuario}/paginaResultadosAlumno`}>Préstamos</Link></li>
-                            <button
-                                onClick={ValidacionDeSalida}
-                                style={{
-                                    cursor: 'pointer',
-                                    border: 'none',
-                                    background: 'none',
-                                    color: 'rgb(93, 1, 93)',
-                                    textDecoration: 'none',
-                                    fontSize: '20px',
-                                    fontWeight: 'bold',
-                                    marginTop: '13px',
-                                    marginLeft: '-70px',
-                                }}
-                            >Salir</button>
+                            <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPrincipalAlumno`)}>Inicio</button></li>
+                            <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPerfilAlumno`)}>Perfil</button></li>
+                            <li><button onClick={() => redirigirConUsuario(`/alumno/paginaResultadosAlumno`)}>Bibliotecas</button></li>
+                            <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                             {MostrarValidacion && (
                                 <>
                                     <div className="confirmacion-fondo">

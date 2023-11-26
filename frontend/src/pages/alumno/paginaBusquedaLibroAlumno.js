@@ -68,12 +68,12 @@ const Principal = () => {
     const doVolver = async () => {
         const userData = { usuario };
         localStorage.setItem("usuario", JSON.stringify(userData));
-        router.push(`/blogcopy/alumno/paginaResultadosAlumno`);
+        router.push(`/alumno/paginaResultadosAlumno`);
     };
     const doReservas = async () => {
         const userData = { usuario };
         localStorage.setItem("usuario", JSON.stringify(userData));
-        router.push(`/blogcopy/paginaUltimasReservas`);
+        router.push(`/paginaUltimasReservas`);
     };
     //---------------------------CALENDARIO-----------------------------------------
     const [showCalendar, setShowCalendar] = useState(false);
@@ -184,9 +184,9 @@ const Principal = () => {
                     <div className="contenidoizquierda">
                         <div className="opciones">
                             <ul>
-                                <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaPrincipalAlumno`)}>Inicio</button></li>
-                                <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaPerfilAlumno`)}>Perfil</button></li>
-                                <li><button onClick={() => redirigirConUsuario(`/blogcopy/alumno/paginaResultadosAlumno`)}>Bibliotecas</button></li>
+                                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPrincipalAlumno`)}>Inicio</button></li>
+                                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPerfilAlumno`)}>Perfil</button></li>
+                                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaResultadosAlumno`)}>Bibliotecas</button></li>
                                 <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                                 {MostrarValidacion && (
                                     <>
@@ -232,7 +232,7 @@ const Principal = () => {
                                     </div>
                                     <div className="imagenes-libro">
                                         {!isBotonDeshabilitado &&
-                                            <div onClick={() => redirigirConUsuario(`/blogcopy/alumno/citasAlumno?id_libro=${encodeURIComponent(libro.id)}`)}>
+                                            <div onClick={() => redirigirConUsuario(`/alumno/citasAlumno?id_libro=${encodeURIComponent(libro.id)}`)}>
                                                 <img src="/media.png" alt="Icono XD" className="icono-xd"
                                                     style={{
                                                         width: '420px', // Ajusta el ancho máximo de la imagen

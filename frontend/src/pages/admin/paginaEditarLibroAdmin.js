@@ -95,7 +95,7 @@ const AgregarNuevo = () => {
                 setFlag(true);
                 const userData = { usuario };
                 localStorage.setItem("usuario", JSON.stringify(userData));
-                router.push(`/blogcopy/admin/paginaResultadosAdmin`);
+                router.push(`/admin/paginaResultadosAdmin`);
             } else {
                 alert(data.message);
             }
@@ -127,7 +127,7 @@ const AgregarNuevo = () => {
         setFlag(true);
         const userData = { usuario };
         localStorage.setItem("usuario", JSON.stringify(userData));
-        router.push(`/blogcopy/admin/paginaResultadosAdmin`);
+        router.push(`/admin/paginaResultadosAdmin`);
     }
     //LOGICA PARA IR AL INICIO
     const [MostrarValidacion, setMostrarValidacion] = useState(false);
@@ -152,9 +152,9 @@ const AgregarNuevo = () => {
                 <div className="contenidoizquierda">
                     <div className="opciones">
                         <ul>
-                            <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
-                            <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaPerfilAdmin`)}>Perfil</button></li>
-                            <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
+                            <li><button onClick={() => redirigirConUsuario(`/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
+                            <li><button onClick={() => redirigirConUsuario(`/admin/paginaPerfilAdmin`)}>Perfil</button></li>
+                            <li><button onClick={() => redirigirConUsuario(`/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
                             <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                             {MostrarValidacion && (
                                 <>

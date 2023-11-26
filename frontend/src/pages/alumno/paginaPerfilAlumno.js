@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 
 const Principal = () => {
   const router = useRouter();
-  const { usuario } = router.query;
+  const [usuario, setUsuario] = useState('');
   const [primernombre, setPrimernombre] = useState('');
   const [nombre, setNombre] = useState('');
   const [tipoDOC, setTipoDOC] = useState('');
@@ -15,54 +15,67 @@ const Principal = () => {
   const [correo, setCorreo] = useState('');
   const [correoaux, setCorreoaux] = useState('');
   const [password, setPassword] = useState('');
+  const [direccion_imagen_url, setImagenURL] = useState('');
   const [idioma, setIdioma] = useState('');
   const [prefijo, setPrefijo] = useState('');
   const [color, setColor] = useState('');
 
-  useEffect(() => {
-    const recopilarNombreUsuario = async () => {
-      try {
-        const response = await fetch('/api/validar/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ usuario }),
-        });
-        const data = await response.json();
-        const { nombreDelAlumno } = data;
-        const { tipo_documento } = data;
-        const { apellido } = data;
-        const { nro_documento } = data;
-        const { correo } = data;
-        const { password } = data;
-        const { idioma } = data;
-        const { prefijo } = data;
-        const { color } = data;
-        setNombre(nombreDelAlumno);
-        setTipoDOC(tipo_documento);
-        setApellidos(apellido);
-        setNroDocumento(nro_documento);
-        setCorreo(correo);
-        setCorreoaux(correo);
-        setState1({ ...state1, correoaux: correoaux });
-        setPassword(password);
-        setIdioma(idioma);
-        setPrefijo(prefijo);
-        setColor(color);
-        const nombreAlumnoArray = (nombreDelAlumno).split(' ');
-        setPrimernombre(nombreAlumnoArray[0]);
-      } catch (error) {
-        console.error('Error de conexión');
-      }
-    };
 
-    recopilarNombreUsuario();
+  useEffect(() => {
+    const recopilarRouterValue = () => {
+      const usuarioLocalStorage = localStorage.getItem("usuario");
+      const { usuario } = usuarioLocalStorage ? JSON.parse(usuarioLocalStorage) : { usuario: "" };
+      setUsuario(usuario);
+    };
+    recopilarRouterValue();
+  }, [])
+
+  useEffect(() => {
+    if (usuario !== '') {
+      const recopilarNombreUsuario = async () => {
+        try {
+          const response = await fetch('/api/validar/users', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ usuario }),
+          });
+          const data = await response.json();
+          const { nombreDelAlumno } = data;
+          const { tipo_documento } = data;
+          const { apellido } = data;
+          const { nro_documento } = data;
+          const { correo } = data;
+          const { password } = data;
+          const { idioma } = data;
+          const { prefijo } = data;
+          const { color } = data;
+          const { direccion_imagen_url} = data;
+          setNombre(nombreDelAlumno);
+          setTipoDOC(tipo_documento);
+          setApellidos(apellido);
+          setNroDocumento(nro_documento);
+          setCorreo(correo);
+          setCorreoaux(correo);
+          setState1({ ...state1, correoaux: correoaux });
+          setPassword(password);
+          setIdioma(idioma);
+          setPrefijo(prefijo);
+          setColor(color);
+          setImagenURL(direccion_imagen_url);
+          const nombreAlumnoArray = (nombreDelAlumno).split(' ');
+          setPrimernombre(nombreAlumnoArray[0]);
+        } catch (error) {
+          console.error('Error de conexión');
+        }
+      };
+      recopilarNombreUsuario();
+    }
   }, [usuario]);
 
   //--------------------------------------------------------------------------------------------------------------------------------------------
   //LOGICA PARA CARGAR IMAGEN
-  const [imagenURL, setImagenURL] = useState(null);
 
   const handleImagenChange = (e) => {
     const file = e.target.files[0];
@@ -72,6 +85,8 @@ const Principal = () => {
 
       reader.onload = (e) => {
         setImagenURL(e.target.result);
+        setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux , direccion_imagen_url:e.target.result});
+        setState2({ correo: correo, password: password, correoaux: correoaux, direccion_imagen_url:e.target.result});
       };
 
       reader.readAsDataURL(file);
@@ -80,7 +95,7 @@ const Principal = () => {
 
   //-----------------------DATOS PERSONALES---------------------------------------
   const [state1, setState1] = useState(
-    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' }
+    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' , direccion_imagen_url: ''}
   )
   const handleGuardarClick2 = () => {
     actualizarJSONcasoDATOSPERSONALES(state1);
@@ -108,7 +123,7 @@ const Principal = () => {
   }
   //-----------------------CUENTA---------------------------------------
   const [state2, setState2] = useState(
-    { correo: '', password: '', correoaux: '' }
+    { correo: '', password: '', correoaux: '' , direccion_imagen_url: ''}
   )
   async function handleGuardarClick() {
     await actualizarJSONcasoCUENTA(state2);
@@ -133,40 +148,11 @@ const Principal = () => {
       console.error('Error de conexión');
     }
   }
-  //-----------------------PREFERENCIAS---------------------------------------
-  const [state3, setState3] = useState(
-    { idioma: '', prefijo: '', color: '', correoaux: '' }
-  )
-  const handleGuardarClick3 = () => {
-    actualizarJSONcasoPREFERENCIAS(state3);
-  };
-  async function actualizarJSONcasoPREFERENCIAS(nuevosDatos) {
-    try {
-      const response = await fetch('/api/actualizarAdmin/admin3', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(nuevosDatos),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert(data.message);
-        router.push("/login");
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
-      console.error('Error de conexión');
-    }
-  }
-  //------------------------------------------------------------------------------------------------------------
   //logica para cambiar de opcion
-  const [opcionSeleccionada, setOpcionSeleccionada] = useState('datosPersonales');
+  const [opcionSeleccionada, setOpcionSeleccionada] = useState('datosPersonales'); // Estado para la opción seleccionada
   const handleOpcionClick = (opcion) => {
     setOpcionSeleccionada(opcion);
   };
-
   //LOGICA PARA IR AL INICIO
   const [MostrarValidacion, setMostrarValidacion] = useState(false);
   function ValidacionDeSalida() {
@@ -179,6 +165,12 @@ const Principal = () => {
     setMostrarValidacion(false);
   }
 
+  //LOGICA RUTAS
+  const redirigirConUsuario = (ruta) => {
+    const userData = { usuario };
+    localStorage.setItem("usuario", JSON.stringify(userData));
+    router.push(ruta);
+  };
   return (
     <>
       <Layout content={
@@ -186,23 +178,10 @@ const Principal = () => {
           <div className="contenidoizquierda">
             <div className="opciones">
               <ul>
-                <li><Link href={`/blog/admin/${usuario}/paginaPrincipalAdmin`}>Inicio</Link></li>
-                <li><Link href={`/blog/admin/${usuario}/paginaPerfilAdmin`}>Perfil</Link></li>
-                <li><Link href={`/blog/admin/${usuario}/paginaResultadosAdmin`}>Bibliotecas</Link></li>
-                <button
-                  onClick={ValidacionDeSalida}
-                  style={{
-                    cursor: 'pointer',
-                    border: 'none',
-                    background: 'none',
-                    color: 'rgb(93, 1, 93)',
-                    textDecoration: 'none',
-                    fontSize: '20px',
-                    fontWeight: 'bold',
-                    marginTop: '13px',
-                    marginLeft: '-70px',
-                  }}
-                >Salir</button>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPrincipalAlumno`)}>Inicio</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaPerfilAlumno`)}>Perfil</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/alumno/paginaResultadosAlumno`)}>Bibliotecas</button></li>
+                <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                 {MostrarValidacion && (
                   <>
                     <div className="confirmacion-fondo">
@@ -223,23 +202,24 @@ const Principal = () => {
           </div>
           <div className="linea"></div>
           <div className="seccion-perfil">
-            <div className="imagen-admin">
-              {imagenURL && (
+          <div className="imagen-admin">
+              {direccion_imagen_url && (
                 <><img
-                  src={imagenURL}
-                  alt="Imagen del administrador"
+                  src={direccion_imagen_url}
+                  alt="Imagen del alumno"
                   id="imagenAdmin"
                   style={{
                     maxWidth: '100%',
                     maxHeight: '300px', // Ajusta la altura máxima de la imagen según tus necesidades
                   }} /><h1></h1><input
-                    type="file"
-                    id="cargarImagen"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={handleImagenChange} /><label htmlFor="cargarImagen">Cargar imagen</label></>
+                  type="file"
+                  id="cargarImagen"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleImagenChange}
+                /><label htmlFor="cargarImagen">Cargar imagen</label></>
               )}
-              {!imagenURL && (
+              {!direccion_imagen_url && (
                 <>
                   <input
                     type="file"
@@ -267,12 +247,6 @@ const Principal = () => {
                 >
                   CUENTA
                 </button>
-                <button
-                  className={`opcion${opcionSeleccionada === 'preferencia' ? ' opcion-activa' : ''}`}
-                  onClick={() => handleOpcionClick('preferencia')}
-                >
-                  PREFERENCIA
-                </button>
               </div>
               {/* Contenido de las opciones */}
               <div className="opciones-contenido">
@@ -288,7 +262,7 @@ const Principal = () => {
                         required
                         value={nombre}
                         onChange={(e) => {
-                          setState1({ nombre: e.target.value, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: e.target.value, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux , direccion_imagen_url:direccion_imagen_url});
                           setNombre(e.target.value);
                         }}
                       />
@@ -303,7 +277,7 @@ const Principal = () => {
                         required
                         value={tipoDOC}
                         onChange={(e) => {
-                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: e.target.value, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: e.target.value, nroDocumento: nroDocumento, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
                           setTipoDOC(e.target.value);
                         }}
                       />
@@ -318,7 +292,7 @@ const Principal = () => {
                         required
                         value={apellidos}
                         onChange={(e) => {
-                          setState1({ nombre: nombre, apellidos: e.target.value, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: e.target.value, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                           setApellidos(e.target.value);
                         }}
                       />
@@ -334,7 +308,7 @@ const Principal = () => {
                         value={nroDocumento}
                         onChange={(e) => {
                           setNroDocumento(e.target.value);
-                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: e.target.value, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: e.target.value, correoaux: correoaux, direccion_imagen_url:direccion_imagen_url });
                         }}
                       />
                     </div>
@@ -355,7 +329,7 @@ const Principal = () => {
                         required
                         value={correo}
                         onChange={(e) => {
-                          setState2({ correo: e.target.value, password: password, correoaux: correoaux });
+                          setState2({ correo: e.target.value, password: password, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
                           setCorreo(e.target.value)
                         }}
                       />
@@ -370,65 +344,13 @@ const Principal = () => {
                         required
                         value={password}
                         onChange={(e) => {
-                          setState2({ correo: correo, password: e.target.value, correoaux: correoaux });
+                          setState2({ correo: correo, password: e.target.value, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
                           setPassword(e.target.value)
                         }}
                       />
                     </div>
                     <div className="button-container-2" >
                       <button className="register-button-2" onClick={handleGuardarClick}>Guardar</button>
-                    </div>
-                  </div>
-                )}
-                {opcionSeleccionada === 'preferencia' && (
-                  <div className="column-2">
-                    <div className="input-container-2" >
-                      <label className="form-label-2" htmlFor="idioma">Idioma:</label>
-                      <input
-                        className="form-input-2"
-                        type="text"
-                        id="idioma"
-                        name="idioma"
-                        required
-                        value={idioma}
-                        onChange={(e) => {
-                          setState3({ idioma: e.target.value, prefijo: prefijo, color: color, correoaux: correoaux });
-                          setIdioma(e.target.value)
-                        }}
-                      />
-                    </div>
-                    <div className="input-container-2" >
-                      <label className="form-label-2" htmlFor="prefijo">Prefijo:</label>
-                      <input
-                        className="form-input-2"
-                        type="text"
-                        id="prefijo"
-                        name="prefijo"
-                        required
-                        value={prefijo}
-                        onChange={(e) => {
-                          setState3({ idioma: idioma, prefijo: e.target.value, color: color, correoaux: correoaux });
-                          setPrefijo(e.target.value)
-                        }}
-                      />
-                    </div>
-                    <div className="input-container-2" >
-                      <label className="form-label-2" htmlFor="color">Color:</label>
-                      <input
-                        className="form-input-2"
-                        type="text"
-                        id="color"
-                        name="color"
-                        required
-                        value={color}
-                        onChange={(e) => {
-                          setState3({ idioma: idioma, prefijo: prefijo, color: e.target.value, correoaux: correoaux });
-                          setColor(e.target.value)
-                        }}
-                      />
-                    </div>
-                    <div className="button-container-2" >
-                      <button className="register-button-2" onClick={handleGuardarClick3}>Guardar</button>
                     </div>
                   </div>
                 )}

@@ -208,9 +208,9 @@ const Principal = () => {
           <div className="contenidoizquierda">
             <div className="opciones">
               <ul>
-                <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
-                <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaPerfilAdmin`)}>Perfil</button></li>
-                <li><button onClick={() => redirigirConUsuario(`/blogcopy/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/admin/paginaPrincipalAdmin`)}>Inicio</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/admin/paginaPerfilAdmin`)}>Perfil</button></li>
+                <li><button onClick={() => redirigirConUsuario(`/admin/paginaResultadosAdmin`)}>Bibliotecas</button></li>
                 <li><button onClick={ValidacionDeSalida}>Salir</button></li>
                 {MostrarValidacion && (
                   <>

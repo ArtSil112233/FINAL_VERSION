@@ -35,12 +35,12 @@ const Logear = () => {
         if (tipo_usuario === "administrador") {
           const userData = { usuario }; // Objeto que contiene el nombre de usuario
           localStorage.setItem("usuario", JSON.stringify(userData));
-          router.push(`/blogcopy/admin/paginaPrincipalAdmin`);
+          router.push(`/admin/paginaPrincipalAdmin`);
           //router.push(`/blog/admin/${usuario}/paginaPrincipalAdmin`);
         } else {
           const userData = { usuario }; // Objeto que contiene el nombre de usuario
           localStorage.setItem("usuario", JSON.stringify(userData));
-          router.push(`/blogcopy/alumno/paginaPrincipalAlumno`);
+          router.push(`/alumno/paginaPrincipalAlumno`);
           //router.push(`/blog/alumno/${usuario}/paginaPrincipalAlumno`);
         }
       } else {
