@@ -82,7 +82,7 @@ ruta.post('/reservas', async (req, res) => {
       id_usuario: user.id
     });
     const nuevoReserva2 = await db.libro.update(
-      { diponibilidad_libro: 0 },
+      { disponibilidad_libro: 0 },
       { where: { id: id_libro } }
     );
     res.json({ success: true });

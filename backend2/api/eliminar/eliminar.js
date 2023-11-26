@@ -22,7 +22,7 @@ ruta.post('/reserva', async (req, res) => {
     console.log(id_libro);
     try {
         await db.reserva.update({ disponibilidad: 0 }, { where: { id_libro: id_libro, disponibilidad: 1} });
-        await db.libro.update({ diponibilidad_libro: 1 }, { where: { id: id_libro } });
+        await db.libro.update({ disponibilidad_libro: 1 }, { where: { id: id_libro } });
         res.json({success: true});
     } catch (error) {
         console.error('Error al actualizar la información del usuario, posible problemas de conexión!', error);

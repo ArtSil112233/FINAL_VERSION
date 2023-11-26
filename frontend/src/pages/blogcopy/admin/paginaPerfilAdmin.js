@@ -86,6 +86,9 @@ const Principal = () => {
 
       reader.onload = (e) => {
         setImagenURL(e.target.result);
+        setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux , direccion_imagen_url:e.target.result});
+        setState2({ correo: correo, password: password,correoaux: correoaux, direccion_imagen_url:e.target.result});
+        setState3({ idioma: idioma, prefijo: prefijo, color: color, correoaux: correoaux, direccion_imagen_url:e.target.result});
       };
 
       reader.readAsDataURL(file);
@@ -100,7 +103,7 @@ const Principal = () => {
     actualizarJSONcasoDATOSPERSONALES(state1);
   };
   async function actualizarJSONcasoDATOSPERSONALES(nuevosDatos) {
-    console.log(nuevosDatos);
+    console.log(nuevosDatos.direccion_imagen_url);
     try {
       const response = await fetch('/api/actualizarAdmin/admin1', {
         method: 'POST',
@@ -295,7 +298,7 @@ const Principal = () => {
                         required
                         value={nombre}
                         onChange={(e) => {
-                          setState1({ nombre: e.target.value, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: e.target.value, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                           setNombre(e.target.value);
                         }}
                       />
@@ -310,7 +313,7 @@ const Principal = () => {
                         required
                         value={tipoDOC}
                         onChange={(e) => {
-                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: e.target.value, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: e.target.value, nroDocumento: nroDocumento, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
                           setTipoDOC(e.target.value);
                         }}
                       />
@@ -325,7 +328,7 @@ const Principal = () => {
                         required
                         value={apellidos}
                         onChange={(e) => {
-                          setState1({ nombre: nombre, apellidos: e.target.value, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: e.target.value, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                           setApellidos(e.target.value);
                         }}
                       />
@@ -341,7 +344,7 @@ const Principal = () => {
                         value={nroDocumento}
                         onChange={(e) => {
                           setNroDocumento(e.target.value);
-                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: e.target.value, correoaux: correoaux });
+                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: e.target.value, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                         }}
                       />
                     </div>
@@ -362,7 +365,7 @@ const Principal = () => {
                         required
                         value={correo}
                         onChange={(e) => {
-                          setState2({ correo: e.target.value, password: password, correoaux: correoaux });
+                          setState2({ correo: e.target.value, password: password, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
                           setCorreo(e.target.value)
                         }}
                       />
@@ -377,7 +380,7 @@ const Principal = () => {
                         required
                         value={password}
                         onChange={(e) => {
-                          setState2({ correo: correo, password: e.target.value, correoaux: correoaux });
+                          setState2({ correo: correo, password: e.target.value, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                           setPassword(e.target.value)
                         }}
                       />
@@ -399,7 +402,7 @@ const Principal = () => {
                         required
                         value={idioma}
                         onChange={(e) => {
-                          setState3({ idioma: e.target.value, prefijo: prefijo, color: color, correoaux: correoaux });
+                          setState3({ idioma: e.target.value, prefijo: prefijo, color: color, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                           setIdioma(e.target.value)
                         }}
                       />
@@ -414,7 +417,7 @@ const Principal = () => {
                         required
                         value={prefijo}
                         onChange={(e) => {
-                          setState3({ idioma: idioma, prefijo: e.target.value, color: color, correoaux: correoaux });
+                          setState3({ idioma: idioma, prefijo: e.target.value, color: color, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                           setPrefijo(e.target.value)
                         }}
                       />
@@ -429,7 +432,7 @@ const Principal = () => {
                         required
                         value={color}
                         onChange={(e) => {
-                          setState3({ idioma: idioma, prefijo: prefijo, color: e.target.value, correoaux: correoaux });
+                          setState3({ idioma: idioma, prefijo: prefijo, color: e.target.value, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
                           setColor(e.target.value)
                         }}
                       />

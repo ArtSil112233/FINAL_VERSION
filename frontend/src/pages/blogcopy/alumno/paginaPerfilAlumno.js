@@ -85,6 +85,8 @@ const Principal = () => {
 
       reader.onload = (e) => {
         setImagenURL(e.target.result);
+        setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux , direccion_imagen_url:e.target.result});
+        setState2({ correo: correo, password: password, correoaux: correoaux, direccion_imagen_url:e.target.result});
       };
 
       reader.readAsDataURL(file);

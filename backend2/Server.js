@@ -13,6 +13,7 @@ const editarlibro = require('./api/editarlibro/editarlibro')
 const eliminar = require('./api/eliminar/eliminar')
 
 const app = express()
+app.use(express.json({ limit: '100mb' }));
 const port = 3080
 
 app.use(express.static(path.join(__dirname, './static')));
