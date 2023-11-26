@@ -153,7 +153,7 @@ const Principal = () => {
                 </div>
               ))}
             </div>
-            <button className= "ver_todo" onClick={() => redirigirConUsuario(`/paginaUltimasReservas`)}>Ver todo</button>
+            <button className="ver_todo" onClick={() => redirigirConUsuario(`/paginaUltimasReservas`)}>Ver todo</button>
           </div>
 
           <div className="seccion-igual-2">

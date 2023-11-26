@@ -14,7 +14,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useEffect, useState } from 'react';
 
 export default function MyApp({ Component, pageProps }) {
-  const [fechainicial,setFechainicial] = useState(new Date());
+  const [fechainicial, setFechainicial] = useState(new Date());
   /*
   useEffect(() => {
     const recopilarIdUsuario = async () => {

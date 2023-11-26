@@ -8,8 +8,7 @@ const RecoverPassword = () => {
   }
 
   async function mngmtSubmit(e) {
-    e.preventDefault(); // Evita que el formulario se envíe por defecto
-
+    e.preventDefault();
     try {
       const response = await fetch('/api/recovered/recovered', {
         method: 'POST',
@@ -45,9 +44,9 @@ const RecoverPassword = () => {
             <label className="form-label-oc" htmlFor="correo">Correo electrónico:</label>
             <input
               className="form-input-oc"
-              type="email" 
+              type="email"
               id="correo"
-              name="correo" 
+              name="correo"
               value={state.correo}
               onChange={mngmtChange}
               required

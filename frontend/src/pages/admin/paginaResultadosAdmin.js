@@ -115,12 +115,12 @@ const Principal = () => {
         }
     }
 
-    // Calcula los índices de inicio y fin para mostrar los resultados de la página actual
     const indiceInicio = (paginaActual - 1) * resultadosPorPagina;
     const indiceFin = indiceInicio + resultadosPorPagina;
 
     const [reservas, setReservas] = useState([]);
     /*
+    forma entrega 1
         async function obtenerReservas() {
             try {
                 const response = await fetch('/api/filtrar/filtrarReservas', {
@@ -155,7 +155,7 @@ const Principal = () => {
         const userData = { usuario };
         localStorage.setItem("usuario", JSON.stringify(userData));
         router.push({
-            pathname: `/admin/paginaEditarLibroAdmin`, // Reemplaza con la ruta correcta
+            pathname: `/admin/paginaEditarLibroAdmin`,
             query: queryParams,
         });
     };

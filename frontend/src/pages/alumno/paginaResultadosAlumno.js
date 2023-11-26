@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Head from 'next/head';
-import { useState ,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import LayoutCasoBusquedaAlumno from '@/components/LayoutCasoBusquedaAlumno';
 import { useRouter } from 'next/router';
 
@@ -17,7 +17,7 @@ const Principal = () => {
     recopilarRouterValue();
   }, [])
 
-  // Estado local para el valor de la casilla de búsqueda y checkboxes
+
   const [busqueda, setBusqueda] = useState('');
   const [checkboxes, setCheckboxes] = useState({
     titulo: false,
@@ -26,10 +26,9 @@ const Principal = () => {
     isbn: false,
   });
 
-  // Función para limpiar la búsqueda y deseleccionar los checkboxes
   const limpiarBusqueda = () => {
-    setBusqueda(''); // Limpia el valor de la casilla de búsqueda
-    setCheckboxes({  // Deselecciona todos los checkboxes
+    setBusqueda('');
+    setCheckboxes({
       titulo: false,
       autor: false,
       serie: false,
@@ -37,19 +36,15 @@ const Principal = () => {
     });
   };
 
-  // Función para manejar la búsqueda y redireccionar
   const buscar = () => {
-    // Construir la URL con los parámetros
     const queryParams = {
       busqueda,
-      checkboxes: JSON.stringify(checkboxes), // Convierte el objeto de checkboxes a una cadena JSON
+      checkboxes: JSON.stringify(checkboxes),
     };
-
-    // Generar la URL con los parámetros y redireccionar
     const userData = { usuario };
     localStorage.setItem("usuario", JSON.stringify(userData));
     router.push({
-      pathname: `/alumno/paginaBusquedaLibroAlumno`, // Reemplaza con la ruta correcta
+      pathname: `/alumno/paginaBusquedaLibroAlumno`,
       query: queryParams,
     });
   };
@@ -139,8 +134,8 @@ const Principal = () => {
                   <input
                     type="checkbox"
                     name="autor"
-                    checked={checkboxes.autor} // Asigna el estado de los checkboxes
-                    onChange={() => setCheckboxes({ ...checkboxes, autor: !checkboxes.autor })} // Actualiza el estado en cambio
+                    checked={checkboxes.autor}
+                    onChange={() => setCheckboxes({ ...checkboxes, autor: !checkboxes.autor })}
                   />
                   Autor, Autores
                 </div>
@@ -148,8 +143,8 @@ const Principal = () => {
                   <input
                     type="checkbox"
                     name="serie"
-                    checked={checkboxes.serie} // Asigna el estado de los checkboxes
-                    onChange={() => setCheckboxes({ ...checkboxes, serie: !checkboxes.serie })} // Actualiza el estado en cambio
+                    checked={checkboxes.serie}
+                    onChange={() => setCheckboxes({ ...checkboxes, serie: !checkboxes.serie })}
                   />
                   Serie
                 </div>
@@ -157,8 +152,8 @@ const Principal = () => {
                   <input
                     type="checkbox"
                     name="isbn"
-                    checked={checkboxes.isbn} // Asigna el estado de los checkboxes
-                    onChange={() => setCheckboxes({ ...checkboxes, isbn: !checkboxes.isbn })} // Actualiza el estado en cambio
+                    checked={checkboxes.isbn}
+                    onChange={() => setCheckboxes({ ...checkboxes, isbn: !checkboxes.isbn })}
                   />
                   ISBN
                 </div>

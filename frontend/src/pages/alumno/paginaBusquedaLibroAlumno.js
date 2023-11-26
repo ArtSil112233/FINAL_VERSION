@@ -10,7 +10,6 @@ const Principal = () => {
     const router = useRouter();
     const [usuario, setUsuario] = useState('');
     const { busqueda, checkboxes } = router.query;
-    // Convierte los valores de los checkboxes en un objeto booleano
     const checkboxesObj = checkboxes
         ? JSON.parse(checkboxes)
         : { titulo: false, autor: false, serie: false, isbn: false };
@@ -61,7 +60,6 @@ const Principal = () => {
             setPaginaActual(paginaActual - 1);
         }
     };
-    // Calcula los índices de inicio y fin para mostrar los resultados de la página actual
     const indiceInicio = (paginaActual - 1) * resultadosPorPagina;
     const indiceFin = indiceInicio + resultadosPorPagina;
     //-------------------------------------------------------------------------------------
@@ -112,7 +110,6 @@ const Principal = () => {
     const [fechaentrega, setFechaEntrega] = useState(null);
     const registrarReserva = async () => {
         if (libroSeleccionado) {
-            // Crea un objeto de reserva con la fecha, usuario y título del libro
             const fechaEntrega = new Date(selectedDate);
             const fechaactual = new Date();
             const fechaLimite = new Date(fechaactual);
@@ -235,16 +232,16 @@ const Principal = () => {
                                             <div onClick={() => redirigirConUsuario(`/alumno/citasAlumno?id_libro=${encodeURIComponent(libro.id)}`)}>
                                                 <img src="/media.png" alt="Icono XD" className="icono-xd"
                                                     style={{
-                                                        width: '420px', // Ajusta el ancho máximo de la imagen
-                                                        maxHeight: '300px', // Ajusta la altura máxima de la imagen según tus necesidades
+                                                        width: '420px',
+                                                        maxHeight: '300px',
                                                     }} />
                                                 <img
                                                     src={libro["imagen_portada_url"]}
                                                     alt="Portada del libro"
                                                     className="portada-libro"
                                                     style={{
-                                                        maxWidth: '100%', // Ajusta el ancho máximo de la imagen
-                                                        maxHeight: '300px', // Ajusta la altura máxima de la imagen según tus necesidades
+                                                        maxWidth: '100%',
+                                                        maxHeight: '300px',
                                                     }}
                                                 />
                                             </div>

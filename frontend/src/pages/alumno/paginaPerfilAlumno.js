@@ -51,7 +51,7 @@ const Principal = () => {
           const { idioma } = data;
           const { prefijo } = data;
           const { color } = data;
-          const { direccion_imagen_url} = data;
+          const { direccion_imagen_url } = data;
           setNombre(nombreDelAlumno);
           setTipoDOC(tipo_documento);
           setApellidos(apellido);
@@ -85,8 +85,8 @@ const Principal = () => {
 
       reader.onload = (e) => {
         setImagenURL(e.target.result);
-        setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux , direccion_imagen_url:e.target.result});
-        setState2({ correo: correo, password: password, correoaux: correoaux, direccion_imagen_url:e.target.result});
+        setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux, direccion_imagen_url: e.target.result });
+        setState2({ correo: correo, password: password, correoaux: correoaux, direccion_imagen_url: e.target.result });
       };
 
       reader.readAsDataURL(file);
@@ -95,7 +95,7 @@ const Principal = () => {
 
   //-----------------------DATOS PERSONALES---------------------------------------
   const [state1, setState1] = useState(
-    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' , direccion_imagen_url: ''}
+    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '', direccion_imagen_url: '' }
   )
   const handleGuardarClick2 = () => {
     actualizarJSONcasoDATOSPERSONALES(state1);
@@ -123,7 +123,7 @@ const Principal = () => {
   }
   //-----------------------CUENTA---------------------------------------
   const [state2, setState2] = useState(
-    { correo: '', password: '', correoaux: '' , direccion_imagen_url: ''}
+    { correo: '', password: '', correoaux: '', direccion_imagen_url: '' }
   )
   async function handleGuardarClick() {
     await actualizarJSONcasoCUENTA(state2);
@@ -202,7 +202,7 @@ const Principal = () => {
           </div>
           <div className="linea"></div>
           <div className="seccion-perfil">
-          <div className="imagen-admin">
+            <div className="imagen-admin">
               {direccion_imagen_url && (
                 <><img
                   src={direccion_imagen_url}
@@ -210,14 +210,14 @@ const Principal = () => {
                   id="imagenAdmin"
                   style={{
                     maxWidth: '100%',
-                    maxHeight: '300px', // Ajusta la altura máxima de la imagen según tus necesidades
+                    maxHeight: '300px',
                   }} /><h1></h1><input
-                  type="file"
-                  id="cargarImagen"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  onChange={handleImagenChange}
-                /><label htmlFor="cargarImagen">Cargar imagen</label></>
+                    type="file"
+                    id="cargarImagen"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={handleImagenChange}
+                  /><label htmlFor="cargarImagen">Cargar imagen</label></>
               )}
               {!direccion_imagen_url && (
                 <>
@@ -262,7 +262,7 @@ const Principal = () => {
                         required
                         value={nombre}
                         onChange={(e) => {
-                          setState1({ nombre: e.target.value, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux , direccion_imagen_url:direccion_imagen_url});
+                          setState1({ nombre: e.target.value, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux, direccion_imagen_url: direccion_imagen_url });
                           setNombre(e.target.value);
                         }}
                       />
@@ -277,7 +277,7 @@ const Principal = () => {
                         required
                         value={tipoDOC}
                         onChange={(e) => {
-                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: e.target.value, nroDocumento: nroDocumento, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
+                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: e.target.value, nroDocumento: nroDocumento, correoaux: correoaux, direccion_imagen_url: direccion_imagen_url });
                           setTipoDOC(e.target.value);
                         }}
                       />
@@ -292,7 +292,7 @@ const Principal = () => {
                         required
                         value={apellidos}
                         onChange={(e) => {
-                          setState1({ nombre: nombre, apellidos: e.target.value, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux ,direccion_imagen_url:direccion_imagen_url});
+                          setState1({ nombre: nombre, apellidos: e.target.value, tipoDOC: tipoDOC, nroDocumento: nroDocumento, correoaux: correoaux, direccion_imagen_url: direccion_imagen_url });
                           setApellidos(e.target.value);
                         }}
                       />
@@ -308,7 +308,7 @@ const Principal = () => {
                         value={nroDocumento}
                         onChange={(e) => {
                           setNroDocumento(e.target.value);
-                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: e.target.value, correoaux: correoaux, direccion_imagen_url:direccion_imagen_url });
+                          setState1({ nombre: nombre, apellidos: apellidos, tipoDOC: tipoDOC, nroDocumento: e.target.value, correoaux: correoaux, direccion_imagen_url: direccion_imagen_url });
                         }}
                       />
                     </div>
@@ -329,7 +329,7 @@ const Principal = () => {
                         required
                         value={correo}
                         onChange={(e) => {
-                          setState2({ correo: e.target.value, password: password, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
+                          setState2({ correo: e.target.value, password: password, correoaux: correoaux, direccion_imagen_url: direccion_imagen_url });
                           setCorreo(e.target.value)
                         }}
                       />
@@ -344,7 +344,7 @@ const Principal = () => {
                         required
                         value={password}
                         onChange={(e) => {
-                          setState2({ correo: correo, password: e.target.value, correoaux: correoaux,direccion_imagen_url:direccion_imagen_url });
+                          setState2({ correo: correo, password: e.target.value, correoaux: correoaux, direccion_imagen_url: direccion_imagen_url });
                           setPassword(e.target.value)
                         }}
                       />

@@ -29,7 +29,7 @@ const Logear = () => {
       });
 
       const data = await response.json();
-      const {success} = data
+      const { success } = data
       if (success) {
         const { tipo_usuario } = data;
         if (tipo_usuario === "administrador") {
@@ -44,7 +44,6 @@ const Logear = () => {
           //router.push(`/blog/alumno/${usuario}/paginaPrincipalAlumno`);
         }
       } else {
-        // No coincide la contraseña o usuario
         alert(data.message || 'Error al autenticar');
       }
     } catch (error) {
@@ -61,11 +60,11 @@ const Logear = () => {
           <form onSubmit={validarLogeo}> {/* Agregamos onSubmit para manejar el envío del formulario */}
             <div className="input-container">
               <label className="form-label" htmlFor="usuario">Usuario o correo:</label>
-              <input className="form-input" type="text" id="usuario" name="usuario" onChange={mngmtChange} value={state.usuario} required autoComplete="current-password"/>
+              <input className="form-input" type="text" id="usuario" name="usuario" onChange={mngmtChange} value={state.usuario} required autoComplete="current-password" />
             </div>
             <div className="input-container">
               <label className="form-label" htmlFor="contrasena">Contraseña:</label>
-              <input className="form-input" type="password" id="contrasena" name="contrasena" onChange={mngmtChange} value={state.contrasena} required autoComplete="current-password"/>
+              <input className="form-input" type="password" id="contrasena" name="contrasena" onChange={mngmtChange} value={state.contrasena} required autoComplete="current-password" />
             </div>
             <div className="forgot-password-container">
               <Link href="/recover-password">Olvidé mi contraseña</Link>

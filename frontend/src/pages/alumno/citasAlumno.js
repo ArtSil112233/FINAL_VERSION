@@ -7,7 +7,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const PaginaDestino = () => {
-    // Obtiene el objeto router
     const router = useRouter();
     const [usuario, setUsuario] = useState('');
     const { id_libro } = router.query;
@@ -16,8 +15,6 @@ const PaginaDestino = () => {
     const [imagen_portada_url, setImagen_portada_url] = useState("");
     const [url_compra, setUrl_compra] = useState("");
     const [editorial, setEditorial] = useState("");
-
-    // Define un estado para el libro
     const [libro, setLibro] = useState(null);
     useEffect(() => {
         const recopilarRouterValue = () => {
@@ -54,7 +51,7 @@ const PaginaDestino = () => {
 
     }, [id_libro]);
 
-    
+
     const [showCalendar, setShowCalendar] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
 

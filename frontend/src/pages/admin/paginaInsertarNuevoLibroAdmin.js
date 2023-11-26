@@ -97,7 +97,6 @@ const AgregarNuevo = () => {
 
     const completo = () => {
         setFlag(false);
-        // Restablecer los valores del libroNuevo
         setLibroNuevo({
             titulo: "",
             autor: "",
