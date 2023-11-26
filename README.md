@@ -16,3 +16,6 @@
 -   copy usuarios(id,nombre,apellido,tipo_documento,nro_documento,correo,password,repetir_password,imagen_url,idioma,prefijo,color,tipo_usuario) from 'C:\Users\User\Desktop\Prog. Web\datosPW\usuarios.csv' DELIMITER ';' CSV HEADER; 
 -   copy reservas(id,fecha,id_libro,id_usuario,fechaentrega,disponibilidad) from 'C:\Users\User\Desktop\Prog. Web\datosPW\reservas.csv' DELIMITER ';' CSV HEADER; 
 
+# SENTENCIAS SCRIPT ( en el bin y una vez tu motor de base de datos corriendo)
+psql -h localhost -U postgres -p 5432 -d {BD_name} < dbexport.pgsq
+
