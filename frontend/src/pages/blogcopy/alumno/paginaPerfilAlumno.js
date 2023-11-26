@@ -15,7 +15,7 @@ const Principal = () => {
   const [correo, setCorreo] = useState('');
   const [correoaux, setCorreoaux] = useState('');
   const [password, setPassword] = useState('');
-  const [direccion_imagen_url, setImagenURL] = useState(null);
+  const [direccion_imagen_url, setImagenURL] = useState('');
   const [idioma, setIdioma] = useState('');
   const [prefijo, setPrefijo] = useState('');
   const [color, setColor] = useState('');
@@ -93,7 +93,7 @@ const Principal = () => {
 
   //-----------------------DATOS PERSONALES---------------------------------------
   const [state1, setState1] = useState(
-    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' , direccion_imagen_url: null}
+    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' , direccion_imagen_url: ''}
   )
   const handleGuardarClick2 = () => {
     actualizarJSONcasoDATOSPERSONALES(state1);
@@ -121,7 +121,7 @@ const Principal = () => {
   }
   //-----------------------CUENTA---------------------------------------
   const [state2, setState2] = useState(
-    { correo: '', password: '', correoaux: '' , direccion_imagen_url: null}
+    { correo: '', password: '', correoaux: '' , direccion_imagen_url: ''}
   )
   async function handleGuardarClick() {
     await actualizarJSONcasoCUENTA(state2);

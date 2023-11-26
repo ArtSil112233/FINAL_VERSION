@@ -86,7 +86,7 @@ const Principal = () => {
 function crearCartaUSER(index, reserva) {
     return (
         <>
-            <div className="carta" key={index}>
+            <div className={reserva.disponibilidad == 1? ("carta"): ("carta_off") } key={index}>
                 <div className="contenido">
                     <div className='Titulo_card'>
                         <h2 >{reserva.reservalibro.titulo}</h2>

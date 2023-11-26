@@ -20,7 +20,7 @@ const Principal = () => {
   const [idioma, setIdioma] = useState('');
   const [prefijo, setPrefijo] = useState('');
   const [color, setColor] = useState('');
-  const [direccion_imagen_url, setImagenURL] = useState(null);
+  const [direccion_imagen_url, setImagenURL] = useState('');
 
   useEffect(() => {
     const recopilarRouterValue = () => {
@@ -52,6 +52,7 @@ const Principal = () => {
           const { idioma } = data;
           const { prefijo } = data;
           const { color } = data;
+          const { direccion_imagen_url } = data;
           setNombre(nombreDelAlumno);
           setTipoDOC(tipo_documento);
           setApellidos(apellido);
@@ -63,6 +64,7 @@ const Principal = () => {
           setIdioma(idioma);
           setPrefijo(prefijo);
           setColor(color);
+          setImagenURL(direccion_imagen_url);
           const nombreAlumnoArray = (nombreDelAlumno).split(' ');
           setPrimernombre(nombreAlumnoArray[0]);
         } catch (error) {
@@ -92,7 +94,7 @@ const Principal = () => {
 
   //-----------------------DATOS PERSONALES---------------------------------------
   const [state1, setState1] = useState(
-    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '' , direccion_imagen_url: null}
+    { nombre: '', tipoDOC: '', apellidos: '', nroDocumento: '', correoaux: '', direccion_imagen_url: '' }
   )
   const handleGuardarClick2 = () => {
     actualizarJSONcasoDATOSPERSONALES(state1);
@@ -120,7 +122,7 @@ const Principal = () => {
   }
   //-----------------------CUENTA---------------------------------------
   const [state2, setState2] = useState(
-    { correo: '', password: '', correoaux: '' , direccion_imagen_url: null}
+    { correo: '', password: '', correoaux: '', direccion_imagen_url: '' }
   )
   async function handleGuardarClick() {
     await actualizarJSONcasoCUENTA(state2);
@@ -147,7 +149,7 @@ const Principal = () => {
   }
   //-----------------------PREFERENCIAS---------------------------------------
   const [state3, setState3] = useState(
-    { idioma: '', prefijo: '', color: '', correoaux: '' , direccion_imagen_url: null}
+    { idioma: '', prefijo: '', color: '', correoaux: '', direccion_imagen_url: '' }
   )
   const handleGuardarClick3 = () => {
     actualizarJSONcasoPREFERENCIAS(state3);
@@ -231,7 +233,7 @@ const Principal = () => {
               {direccion_imagen_url && (
                 <><img
                   src={direccion_imagen_url}
-                  alt="Imagen del administrador"
+                  alt="Imagen del alumno"
                   id="imagenAdmin"
                   style={{
                     maxWidth: '100%',
@@ -241,7 +243,8 @@ const Principal = () => {
                     id="cargarImagen"
                     accept="image/*"
                     style={{ display: 'none' }}
-                    onChange={handleImagenChange} /><label htmlFor="cargarImagen">Cargar imagen</label></>
+                    onChange={handleImagenChange}
+                  /><label htmlFor="cargarImagen">Cargar imagen</label></>
               )}
               {!direccion_imagen_url && (
                 <>
